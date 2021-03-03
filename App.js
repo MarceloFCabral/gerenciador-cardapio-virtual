@@ -7,14 +7,8 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-} from 'react-native';
-//import { BottomNavigation } from 'react-native-paper';
-import TelaLogin from './src/screens/Login.js';
+import StackNavigator from './src/components/navigation/StackNavigator';
 
-const App = () => <TelaLogin />;
+const App = () => <StackNavigator />;
 
 export default App;

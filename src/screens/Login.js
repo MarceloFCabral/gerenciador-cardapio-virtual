@@ -9,7 +9,7 @@ import Context from '../components/Context';
 import * as Network from '../network';
 //import { getBody } from '../utils';
 
-const TelaLogin = () => {
+const TelaLogin = ({ navigation }) => {
 	const [email, setEmail] = React.useState('');
 	const [pw, setPw] = React.useState('');
 	const [token, setToken] = React.useState('');
@@ -23,7 +23,7 @@ const TelaLogin = () => {
 					/>
 					<TextInput
 						label="Usuário"
-						value={user}
+						value={email}
 						onChangeText={text => setEmail(text)}
 						mode="outlined"
 					/>
@@ -33,7 +33,7 @@ const TelaLogin = () => {
 						onChangeText={text => setPw(text)}
 						mode="outlined"
 					/>
-					<Button mode="contained" onPress={() => Network.login(email, pw)}>
+					<Button mode="contained" onPress={() => Network.login(email, pw, navigation, setToken)}>
 						LOGIN
 					</Button>
 					<Text style={{ marginTop: 15 }} onPress={() => console.log("esqueceu a senha")}>
