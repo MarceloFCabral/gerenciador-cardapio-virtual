@@ -1,25 +1,57 @@
-import * as React from 'react';
+/*
+jwt: modificar valor apenas quando response.ok === true (token retornado)
+*/
+import React, { useEffect } from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
+import TelaEstabelecimento from '../screens/Estabelecimento';
+//import Context from '../Context';
 
-const MusicRoute = () => <Text>Music</Text>;
+const Categorias = () => <Text>Categorias</Text>;
 
-const AlbumsRoute = () => <Text>Albums</Text>;
+const Produtos = () => <Text>Produtos</Text>;
 
-const RecentsRoute = () => <Text>Recents</Text>;
+const Visualizacao = () => <Text>Visualização</Text>;
 
-const BottomNavigator = () => {
+const Configuracoes = () => <Text>Configurações</Text>;
+
+const BottomNavigator = ({ route }) => {
+  const [token, setToken] = React.useState(route.params.token); //valor do token recebido da função login
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'music', title: 'Music', icon: 'queue-music' },
-    { key: 'albums', title: 'Albums', icon: 'album' },
-    { key: 'recents', title: 'Recents', icon: 'history' },
+    { key: 'estabelecimento', title: 'Estabelecimento', icon: 'album' },
+    { key: 'categorias', title: 'Categorias', icon: 'album' },
+    { key: 'produtos', title: 'Produtos', icon: 'history' },
+    { key: 'visualizacao', title: 'Ver cardápio', icon: 'history' },
+    { key: 'configuracoes', title: 'Configurações', icon: 'history' },
   ]);
 
+  //let tokenObj = { token: token, setToken: setToken };
+  /*
   const renderScene = BottomNavigation.SceneMap({
-    music: MusicRoute,
-    albums: AlbumsRoute,
-    recents: RecentsRoute,
+    estabelecimento: TelaEstabelecimento,
+    categorias: Categorias,
+    produtos: Produtos,
+    visualizacao: Visualizacao,
+    configuracoes: Configuracoes
   });
+  */
+
+  useEffect(() => {console.log("=== TOKEN NO COMPONENTE BOTTOMNAVIGATOR ==="); console.log(route.params.token)}, []);
+
+  const renderScene = ({ route, jumpTo }) => {
+    switch(route.key) {
+      case 'estabelecimento':
+        return <TelaEstabelecimento token={token} setToken={setToken} jumpTo={jumpTo} />;
+      case 'categorias':
+        return <Categorias token={token} setToken={setToken} jumpTo={jumpTo} />;
+      case 'produtos':
+        return <Produtos token={token} setToken={setToken} jumpTo={jumpTo} />;
+      case 'visualizacao':
+        return <Visualizacao token={token} setToken={setToken} jumpTo={jumpTo} />;
+      case 'configuracoes':
+        return <Configuracoes token={token} setToken={setToken} jumpTo={jumpTo} />;  
+    }
+  }
 
   return (
     <BottomNavigation

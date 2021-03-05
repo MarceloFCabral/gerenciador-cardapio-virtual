@@ -38,8 +38,5 @@ export function getBody(bodyType, data) { //para métodos POST
     });
   }
 
-  //console.log("-- body --");
-  //console.log(body);
-
   return body;
 }
