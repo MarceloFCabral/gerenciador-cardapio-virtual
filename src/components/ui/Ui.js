@@ -1,9 +1,38 @@
-import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading } from 'react-native-paper';
+import React from 'react';
+import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CenteredRow } from '../views/Views';
+import { View } from 'react-native';
 import styled from 'styled-components/native';
 import theme from '../../../styles/theme';
 
+//constantes
 const PRIMARY_COLOR = theme.colors.primary;
-const GREY = "#dedede";
+const GREY = theme.colors.disabled;
+const ICON_GREY = "#ababab";
+
+//componentes próprios
+//view com borda inferior para o RippleButton
+const RBView = styled(CenteredRow)`
+	border-bottom-color: ${ICON_GREY};
+	border-bottom-width: 1px;
+`;
+
+export const RippleButton = ({ title, text, onPress }) => (
+	<TouchableRipple
+		onPress={() => onPress()}
+		rippleColor={GREY}
+		style={{ marginTop: '5%' }}
+	>
+		<RBView>
+			<View>
+				<Subheading>{title}</Subheading>
+				<Paragraph numberOfLines={2} style={{ width: 312 }}>{text}</Paragraph>
+			</View>
+			<Icon name="chevron-right" size={30} color={ICON_GREY} />
+		</RBView>
+	</TouchableRipple>
+);
 
 export const Button = styled(PButton)`
   justify-content: center;

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Headline, PrimSeparator, SecSeparator, LoginImage, Subheading } from '../ui/Ui';
-import { FullScreen, GeneralView, CenteredColumn } from '../views/Views';
+import { Headline, PrimSeparator, SecSeparator, LoginImage, Subheading, RippleButton } from '../ui/Ui';
+import { FullScreen, GeneralView } from '../views/Views';
 import { get, ROTAS } from '../../network';
-import { TouchableRipple, Paragraph } from 'react-native-paper';
-import { View, Text } from 'react-native';
+  import { View, Text } from 'react-native';
 //import { View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 //import Context from '../Context';
@@ -66,33 +65,30 @@ const TelaEstabelecimento = ({ token, setToken }) => {
         <LoginImage
           source={require('../../../assets/images/elo-apps.png')}
         />
-        <TouchableRipple
-          onPress={() => console.log('Pressed')}
-          rippleColor="#e1eb34"
-        >
-          <View style={{ height: 80 }}>
-            <Text>Tocável</Text>
-          </View>
-        </TouchableRipple>
+        <RippleButton title="Nome" text={nome} onPress={() => console.log("nome apertado")} />
+        <RippleButton title="Descrição" text={desc} onPress={() => console.log("descrição apertado")} />
+        <RippleButton title="Endereço" text={end} onPress={() => console.log("endereço apertado")} />
+        {/*
         <Subheading>Nome</Subheading>
-        {/*<Paragraph>{nome}</Paragraph>*/}
+        {/*<Paragraph>{nome}</Paragraph>
         <TouchableRipple>
           <Paragraph>{nome}</Paragraph>
         </TouchableRipple>
         <SecSeparator />
 
         <Subheading>Descrição</Subheading>
-        {/*<Paragraph>{desc}</Paragraph>*/}
+        {/*<Paragraph>{desc}</Paragraph>
         <TouchableRipple>
           <Paragraph>{desc}</Paragraph>
         </TouchableRipple>
         <SecSeparator />
 
         <Subheading>Endereço</Subheading>
-        {/*<Paragraph>{end}</Paragraph>*/}
+        {/*<Paragraph>{end}</Paragraph>
         <TouchableRipple>
           <Paragraph>{end}</Paragraph>
         </TouchableRipple>
+        */}
       </GeneralView>
     </FullScreen>
   );

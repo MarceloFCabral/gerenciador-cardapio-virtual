@@ -15,14 +15,14 @@ export const CenteredColumn = styled.View`
   align-items: center;
 `;
 
-export const CenteredRow = styled.View`
-  align-items: center;
-  flex-direction: row;
-`;
-
 export const Centered = styled.View`
   align-items: center;
   justify-content: center;
+`;
+
+export const CenteredRow = styled.View`
+  align-items: center;
+  flex-direction: row;
 `;
 
 export const GeneralView = styled.View`
