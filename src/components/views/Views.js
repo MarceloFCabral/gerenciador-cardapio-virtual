@@ -1,5 +1,16 @@
 import styled from 'styled-components/native';
 
+export const FullScreen = styled.View`
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  background-color: #ffffff;
+`;
+
+export const CenteredFullScreen = styled(FullScreen)`
+  justify-content: center;
+`;
+
 export const CenteredColumn = styled.View`
   align-items: center;
 `;
@@ -15,10 +26,9 @@ export const Centered = styled.View`
 `;
 
 export const GeneralView = styled.View`
-  width: 100%;
+  width: 85%;
   height: 100%;
-  align-items: center;
-  background-color: #ffffff;
+  background-color: #ffffff;/*fcdb03;*/
 `;
 
 export const CenteredGeneralView = styled(GeneralView)`

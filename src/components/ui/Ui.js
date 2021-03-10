@@ -1,43 +1,45 @@
-import { TextInput as PTextInput, Button as PButton, Headline as PHeadline } from 'react-native-paper';
+import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading } from 'react-native-paper';
 import styled from 'styled-components/native';
+import theme from '../../../styles/theme';
+
+const PRIMARY_COLOR = theme.colors.primary;
+const GREY = "#dedede";
 
 export const Button = styled(PButton)`
   justify-content: center;
-	margin-horizontal: 5%;
 	margin-vertical: 5%
 `;
 
 export const TextInput = styled(PTextInput)`
-	width: 80%;
+	width: 100%;
 	height: 55px;
-	margin-horizontal: 5%;
 	margin-vertical: 5%
 `;
 
-/*
-export const Title = styled(PTitle)`
-	font-size: 30px;
-	margin-left: 5%;
-	margin-top: 3%
-`;
-*/
-
 export const Headline = styled(PHeadline)`
 	font-size: 30px;
-	margin-left: 5%;
+	margin-top: 3%
+`;
+
+export const Subheading = styled(PSubheading)`
+	font-size: 20px;
 	margin-top: 3%
 `;
 
 export const LoginImage = styled.Image`
-  width: 80%;
 	height: 150px;
 	margin-bottom: 40px
 `;
 
-export const Separator = styled.View`
-	width: 90%;
+export const PrimSeparator = styled.View`
 	height: 1px;
 	margin-top: 1px;
 	margin-bottom: 20px;
-	background-color: #2f3d74;
+	background-color: ${PRIMARY_COLOR};
+`;
+
+export const SecSeparator = styled(PrimSeparator)`
+	margin-top: 5px;
+	margin-bottom: 15px;
+	background-color: ${GREY}
 `;

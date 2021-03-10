@@ -11,30 +11,27 @@ export const ROTAS = {
   estabelecimentoId: "/estabelecimento/"
 }
 
-export async function post(route, body, token) {
-  let response = {};
+
+export function post(route, body, token) {
   let headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
   if (typeof token != "undefined") headers['Authorization'] = 'Bearer ' + token;
-  try {
-    response = await fetch(URL_API + route, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body)
-    });
-    return response;
-  } catch(e) {
-    console.log("Promise rejeitada em POST. Erro:")
-    console.log(e);
-  }
+  return fetch(URL_API + route, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body)
+  });
 }
 
-export async function get(route, params, token) {
-  const url = URL_API + (typeof token != "undefined" ? "?jwt=" + token : "") + route + params;
-  const response = await fetch(url, {
+export function get(route, params, token) {
+  const url = URL_API + route + params;
+  let headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
+  if (typeof token != "undefined") headers['Authorization'] = 'Bearer ' + token;
+  console.log("=== método get ===");
+  console.log(url);
+  return fetch(url, {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
+    headers
   });
-  return response;
 }
 
 export async function put(route, params, token) {
@@ -47,14 +44,39 @@ export async function put(route, params, token) {
 }
 
 export async function login(email, pw, navigation) {
-  //const response = await post(ROTAS.login, getBody("login", [email, pw]));
-  post(ROTAS.login, getBody("login", [email, pw])).then(response => {
-    if (response.ok === true) {
-      console.log("======= response na função login =======");
-      console.log(response.json());
-      navigation.navigate("bottomNav", { token: (response.json()).token });
-    } else {
-      Alert.alert("E-mail ou senha inválidos.");
-    }
-  });
+  let response = await post(ROTAS.login, getBody("login", [email, pw]));
+  if (response.ok === true) {
+    response = await response.json();
+    navigation.navigate("bottomNav", { token: response.token });
+  } else {
+    Alert.alert("E-mail ou senha inválidos.");
+  }
 }
+/*
+export async function fetchEstabelecimento(id) {
+
+  let r = await get(ROTAS.estabelecimentoId, id, token);
+  if (r.ok) {
+    console.log("=========== response está ok ===========");
+    r = await r.json();
+    console.log(r);
+    r = r.estabelecimento; //sugerir mudança no retorno e não precisar de selecionar objeto estabelecimento da requisição
+    console.log("-- nome --");
+    console.log(r["nome"]);
+    console.log("-- token --");
+    console.log(r["token"]);
+    console.log("-- descricao --");
+    console.log(r["descricao"]);
+    console.log("-- endereço --");
+    console.log(r["endereco"]);
+    setToken(r.token);
+    setNome(r.nome);
+    setDesc(r.descricao);
+    setEnd(r.endereco);
+  } else {
+    console.log("response not ok @ Estabelecimento");
+    r = await r.json();
+    console.log(r);
+  }
+}
+*/

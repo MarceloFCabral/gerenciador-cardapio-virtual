@@ -1,8 +1,5 @@
 import React from 'react';
 
-const Context = React.createContext({
-  token: "default",
-  setToken: () => {}
-});
+const Context = React.createContext();
 
 export default Context;
