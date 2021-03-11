@@ -1,11 +1,10 @@
 /*
 jwt: modificar valor apenas quando response.ok === true (token retornado)
 */
-import React, { useEffect } from 'react';
-//import { useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
-import TelaEstabelecimento from '../screens/Estabelecimento';
-//import Context from '../Context';
+import EstabelecimentoNav from './EstabelecimentoNav';
+import { TokenContext } from '../context/TokenContext';
 
 const Categorias = () => <Text>Categorias</Text>;
 
@@ -15,8 +14,8 @@ const Visualizacao = () => <Text>Visualização</Text>;
 
 const Configuracoes = () => <Text>Configurações</Text>;
 
-const BottomNavigator = ({ route }) => {
-  const [token, setToken] = React.useState(route.params.token); //valor do token recebido da função login
+const BottomNavigator = () => {
+  const { token, setToken } = useContext(TokenContext);
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: 'estabelecimento', title: 'Estabelecimento', icon: 'album' },
@@ -45,12 +44,12 @@ const BottomNavigator = ({ route }) => {
   });
   */
 
-  useEffect(() => {console.log("=== TOKEN NO COMPONENTE BOTTOMNAVIGATOR ==="); console.log(route.params.token)}, []);
+  useEffect(() => {console.log("=== TOKEN NO COMPONENTE BOTTOMNAVIGATOR ==="); console.log(token)}, []);
 
   const renderScene = ({ route, jumpTo }) => {
     switch(route.key) {
       case 'estabelecimento':
-        return <TelaEstabelecimento idxNav={index} token={token} setToken={setToken} jumpTo={jumpTo} />;
+        return <EstabelecimentoNav jumpTo={jumpTo} />;
       case 'categorias':
         return <Categorias token={token} setToken={setToken} jumpTo={jumpTo} />;
       case 'produtos':

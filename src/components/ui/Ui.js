@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { CenteredRow } from '../views/Views';
+import { CenteredRow, FullScreen, GeneralView } from '../views/Views';
 import { View } from 'react-native';
 import styled from 'styled-components/native';
 import theme from '../../../styles/theme';
@@ -11,28 +11,12 @@ const PRIMARY_COLOR = theme.colors.primary;
 const GREY = theme.colors.disabled;
 const ICON_GREY = "#ababab";
 
-//componentes próprios
 //view com borda inferior para o RippleButton
 const RBView = styled(CenteredRow)`
 	border-bottom-color: ${ICON_GREY};
 	border-bottom-width: 1px;
+	padding-bottom: 5px;
 `;
-
-export const RippleButton = ({ title, text, onPress }) => (
-	<TouchableRipple
-		onPress={() => onPress()}
-		rippleColor={GREY}
-		style={{ marginTop: '5%' }}
-	>
-		<RBView>
-			<View>
-				<Subheading>{title}</Subheading>
-				<Paragraph numberOfLines={2} style={{ width: 312 }}>{text}</Paragraph>
-			</View>
-			<Icon name="chevron-right" size={30} color={ICON_GREY} />
-		</RBView>
-	</TouchableRipple>
-);
 
 export const Button = styled(PButton)`
   justify-content: center;
@@ -52,7 +36,6 @@ export const Headline = styled(PHeadline)`
 
 export const Subheading = styled(PSubheading)`
 	font-size: 20px;
-	margin-top: 3%
 `;
 
 export const LoginImage = styled.Image`
@@ -72,3 +55,30 @@ export const SecSeparator = styled(PrimSeparator)`
 	margin-bottom: 15px;
 	background-color: ${GREY}
 `;
+
+//componentes próprios
+export const RippleButton = ({ title, text, onPress }) => (
+	<TouchableRipple
+		onPress={() => onPress()}
+		rippleColor={GREY}
+		style={{ marginTop: '8%' }}
+	>
+		<RBView>
+			<View>
+				<Subheading>{title}</Subheading>
+				<Paragraph numberOfLines={2} style={{ width: 312 }}>{text}</Paragraph>
+			</View>
+			<Icon name="chevron-right" size={30} color={ICON_GREY} />
+		</RBView>
+	</TouchableRipple>
+);
+
+export const StdScreen = ({ title, children }) => (
+	<FullScreen>
+		<GeneralView>
+			<Headline>{title}</Headline>
+			<PrimSeparator />
+			{children}
+		</GeneralView>
+	</FullScreen>
+);

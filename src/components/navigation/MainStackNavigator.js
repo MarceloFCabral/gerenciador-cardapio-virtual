@@ -6,7 +6,7 @@ import BottomNavigator from './BottomNavigator';
 
 const Stack = createStackNavigator();
 
-const StackNavigator = () => (
+const MainStackNavigator = () => (
   <NavigationContainer>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="login" component={TelaLogin} />
@@ -15,4 +15,4 @@ const StackNavigator = () => (
   </NavigationContainer>
 );
 
-export default StackNavigator;
+export default MainStackNavigator;

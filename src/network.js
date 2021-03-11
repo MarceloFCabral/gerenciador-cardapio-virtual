@@ -1,6 +1,8 @@
 import { getBody } from './utils';
 import { Alert } from "react-native";
-
+//import { useContext } from 'react';
+//import { TokenContext } from './components/context/TokenContext';
+//import { EstabelecimentoContext } from './components/context/EstabelecimentoContext';
 
 //URL e rotas
 const URL_API = "http://192.168.1.106/cardapio-virtual-api/public/api";
@@ -43,40 +45,18 @@ export async function put(route, params, token) {
   return response.json();
 }
 
-export async function login(email, pw, navigation) {
+export async function login(email, pw, navigation, setToken) {
   let response = await post(ROTAS.login, getBody("login", [email, pw]));
   if (response.ok === true) {
     response = await response.json();
-    navigation.navigate("bottomNav", { token: response.token });
+    setToken(response.token);
+    console.log("método LOGIN ---- passou setToken");
+    navigation.navigate("bottomNav");
   } else {
     Alert.alert("E-mail ou senha inválidos.");
   }
 }
-/*
-export async function fetchEstabelecimento(id) {
 
-  let r = await get(ROTAS.estabelecimentoId, id, token);
-  if (r.ok) {
-    console.log("=========== response está ok ===========");
-    r = await r.json();
-    console.log(r);
-    r = r.estabelecimento; //sugerir mudança no retorno e não precisar de selecionar objeto estabelecimento da requisição
-    console.log("-- nome --");
-    console.log(r["nome"]);
-    console.log("-- token --");
-    console.log(r["token"]);
-    console.log("-- descricao --");
-    console.log(r["descricao"]);
-    console.log("-- endereço --");
-    console.log(r["endereco"]);
-    setToken(r.token);
-    setNome(r.nome);
-    setDesc(r.descricao);
-    setEnd(r.endereco);
-  } else {
-    console.log("response not ok @ Estabelecimento");
-    r = await r.json();
-    console.log(r);
-  }
+export async function atualizarEstabelecimento(nome, desc, end, setToken) {
+  console.log("função atualizarEstabelecimento");
 }
-*/

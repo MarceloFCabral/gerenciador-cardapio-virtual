@@ -7,8 +7,13 @@
  */
 
 import React from 'react';
-import StackNavigator from './src/components/navigation/StackNavigator';
+import MainStackNavigator from './src/components/navigation/MainStackNavigator';
+import { TokenProvider } from './src/components/context/TokenContext';
 
-const App = () => <StackNavigator />;
+const App = () => (
+  <TokenProvider>
+    <MainStackNavigator />
+  </TokenProvider>
+);
 
 export default App;
