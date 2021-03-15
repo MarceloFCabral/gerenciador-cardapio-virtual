@@ -1,4 +1,4 @@
-import { getBody } from './utils';
+import { getParams } from './utils';
 import { Alert } from "react-native";
 //import { useContext } from 'react';
 //import { TokenContext } from './components/context/TokenContext';
@@ -37,19 +37,20 @@ export function get(route, params, token) {
 }
 
 export async function put(route, params, token) {
-  const url = URL_API + (typeof token != "undefined" ? "?jwt=" + token : "") + route + params;
-  const response = await fetch(url, {
+  const url = URL_API + route + params;
+  let headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
+  if (typeof token != "undefined") headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' }
+    headers
   });
-  return response.json();
 }
 
-export async function login(email, pw, navigation, setToken) {
-  let response = await post(ROTAS.login, getBody("login", [email, pw]));
-  if (response.ok === true) {
-    response = await response.json();
-    setToken(response.token);
+export async function login(userData, navigation, setToken) { //userData = objeto js com chaves user e password -> obrigatório
+  let r = await post(ROTAS.login, userData);
+  if (r.ok === true) {
+    r = await r.json();
+    setToken(r.token);
     console.log("método LOGIN ---- passou setToken");
     navigation.navigate("bottomNav");
   } else {
@@ -57,6 +58,24 @@ export async function login(email, pw, navigation, setToken) {
   }
 }
 
-export async function atualizarEstabelecimento(nome, desc, end, setToken) {
-  console.log("função atualizarEstabelecimento");
+export async function updateEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
+  const { setNome, setDesc, setEnd } = estabContextData;
+  const { token, setToken } = tokenContextData;
+
+  console.log("-- id do estabelecimento -- : " + estabContextData.id);
+
+  let r = await put(ROTAS.estabelecimentoId + estabContextData.id, getParams("estabelecimento", newEstabData), token);
+  if (r.ok === true) {
+    r = await r.json();
+    setToken(r.token);
+    setNome(newEstabData.nome);
+    setDesc(newEstabData.descricao);
+    setEnd(newEstabData.endereco);
+    Alert.alert("Dados atualizados com sucesso!");
+    navigation.goBack();
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
+  }
 }

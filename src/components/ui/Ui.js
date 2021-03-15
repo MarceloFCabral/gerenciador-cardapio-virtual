@@ -1,8 +1,9 @@
 import React from 'react';
 import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { CenteredRow, FullScreen, GeneralView } from '../views/Views';
-import { View } from 'react-native';
+import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
+import { Centered, FullScreen, GeneralView, TouchableFullScreen } from '../views/Views';
+import { View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import theme from '../../../styles/theme';
 
@@ -10,13 +11,6 @@ import theme from '../../../styles/theme';
 const PRIMARY_COLOR = theme.colors.primary;
 const GREY = theme.colors.disabled;
 const ICON_GREY = "#ababab";
-
-//view com borda inferior para o RippleButton
-const RBView = styled(CenteredRow)`
-	border-bottom-color: ${ICON_GREY};
-	border-bottom-width: 1px;
-	padding-bottom: 5px;
-`;
 
 export const Button = styled(PButton)`
   justify-content: center;
@@ -30,7 +24,7 @@ export const TextInput = styled(PTextInput)`
 `;
 
 export const Headline = styled(PHeadline)`
-	font-size: 30px;
+	font-size: 25px;
 	margin-top: 3%
 `;
 
@@ -56,23 +50,86 @@ export const SecSeparator = styled(PrimSeparator)`
 	background-color: ${GREY}
 `;
 
-//componentes próprios
+export const ItemContainer = styled.View`
+	align-items: center;
+	flex-direction: row;
+	border-bottom-color: ${ICON_GREY};
+	border-bottom-width: 1px;
+	padding-bottom: 5px;
+	margin-top: 8%
+`;
+
+/* 
+------------------------
+|	Componentes próprios |
+------------------------
+*/
+
+//---- Elementos genéricos ----
+
+//view com título, texto e borda inferior (estilo iFood)
+export const ItemView = ({ title, text, iconName }) => (
+	<ItemContainer>
+		<View>
+			<Subheading>{title}</Subheading>
+			<Paragraph numberOfLines={2} style={{ width: 312 }}>{text}</Paragraph>
+		</View>
+		{iconName && <MIcon name={iconName} size={30} color={ICON_GREY} />}
+	</ItemContainer>
+);
+
+//---- Botões e outros elementos "atuadores" ----
+
+//botão com animação de toque e borda inferior (estilo iFood)
 export const RippleButton = ({ title, text, onPress }) => (
 	<TouchableRipple
 		onPress={() => onPress()}
 		rippleColor={GREY}
 		style={{ marginTop: '8%' }}
 	>
-		<RBView>
-			<View>
-				<Subheading>{title}</Subheading>
-				<Paragraph numberOfLines={2} style={{ width: 312 }}>{text}</Paragraph>
-			</View>
-			<Icon name="chevron-right" size={30} color={ICON_GREY} />
-		</RBView>
+		<ItemView title={title} text={text} iconName="chevron-right" />
 	</TouchableRipple>
 );
 
+//botão "criar"
+export const CreateButton = ({ onPress }) => (
+	<Centered style={{ flex: 1 }}>
+		<TouchableOpacity 
+			onPress={() => onPress()}
+			activeOpacity={0.5}
+		>
+			<MIcon name="plus-box-outline" size={40} color={ICON_GREY} />
+		</TouchableOpacity>
+	</Centered>
+);
+
+//botão "editar"
+export const EditButton = ({ onPress }) => (
+	<Centered style={{ flex: 1 }}>
+		<TouchableOpacity 
+			onPress={() => onPress()}
+			activeOpacity={0.5}
+		>
+			<MIcon name="square-edit-outline" size={40} color={ICON_GREY} />
+		</TouchableOpacity>
+	</Centered>
+);
+
+//botão "trocar"
+export const ChangeButton = ({ onPress }) => (
+	<Centered style={{ flex: 1 }}>
+		<TouchableOpacity 
+			onPress={() => onPress()}
+			activeOpacity={0.5}
+		>
+			<FAIcon name="refresh" size={40} color={ICON_GREY} />
+		</TouchableOpacity>
+	</Centered>
+);
+
+//---- Telas e views genéricas contendo elementos da UI ----
+
+//view geral para as telas do app
 export const StdScreen = ({ title, children }) => (
 	<FullScreen>
 		<GeneralView>
@@ -82,3 +139,15 @@ export const StdScreen = ({ title, children }) => (
 		</GeneralView>
 	</FullScreen>
 );
+
+//view geral que dá dismiss no teclado caso seja tocada. Ideal para telas com input multiline
+export const TouchableStdScreen = ({ title, children }) => (
+	<TouchableFullScreen>
+		<GeneralView>
+			<Headline>{title}</Headline>
+			<PrimSeparator />
+			{children}
+		</GeneralView>
+	</TouchableFullScreen>
+);
+

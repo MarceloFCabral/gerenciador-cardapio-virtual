@@ -11,7 +11,7 @@ import { TokenContext } from '../context/TokenContext';
 const TelaLogin = ({ navigation }) => {
 	const { setToken } = useContext(TokenContext);
 	const [email, setEmail] = React.useState('');
-	const [pw, setPw] = React.useState('');
+	const [password, setPw] = React.useState('');
 
 	return (
 		<SafeAreaView>
@@ -28,11 +28,11 @@ const TelaLogin = ({ navigation }) => {
 					/>
 					<TextInput
 						label="Senha"
-						value={pw}
+						value={password}
 						onChangeText={text => setPw(text)}
 						mode="outlined"
 					/>
-					<Button mode="contained" onPress={() => login(email, pw, navigation, setToken)}>
+					<Button mode="contained" onPress={() => login({email, password}, navigation, setToken)}>
 						LOGIN
 					</Button>
 					<Text style={{ marginTop: 15 }} onPress={() => console.log("esqueceu a senha")}>

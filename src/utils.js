@@ -1,36 +1,52 @@
-export function getBody(bodyType, data) { //para métodos POST
+/*
+-- POST -- (exige body)
+  - usuário -
+    * register
+    * login
+
+  - estabelecimento -
+    * criar estabelecimento
+  
+  - categoria -
+    * criar categoria
+
+  - produto -
+    * criar produto
+*/
+
+function getKeys(reqType) {
   let keys = null;
-  //let body = new FormData();
-  let body = {};
-  switch(bodyType) {
-    case "login":
+  switch(reqType) {
+    case "usuarioLogin":
       keys = ["email", "password"];
       break;
 
-    case "register":
+    case "usuarioRegister":
       keys = ["name", "email", "password", "password_confirmation"];
       break;
-
-    case "criarEstabelecimento":
+    
+    case "estabelecimento":
       keys = ["nome", "descricao", "endereco"];
       break;
 
-    case "atualizarEstabelecimento":
-      keys = ["nome", "descricao", "endereco"];
-      break;
-
-    case "criarCategoria":
+    case "categoria":
       keys = ["nome", "descricao", "categoria_pai_id", "estabelecimento_id"];
       break;
     
-    case "atualizarCategoria":
-      keys = ["nome", "descricao", "categoria_pai_id", "estabelecimento_id"];
+    case "produto":
+      keys = ["nome", "descricao", "valor", "categoria_id"];
       break;
     
     default:
-      console.log("bodyType não é válido!");
-      break;
+      console.log("reqType não é válido!");
   }
+
+  return keys;
+}
+/*
+export function getBody(bodyType, data) { //para métodos POST
+  let keys = getKeys(bodyType);
+  let body = {};
 
   if (keys !== null) {
     data.forEach((item, i) => {
@@ -39,4 +55,21 @@ export function getBody(bodyType, data) { //para métodos POST
   }
 
   return body;
+}
+*/
+export function getParams(paramsType, data) {
+  let keys = getKeys(paramsType);
+  let params = "?";
+
+  if (keys !== null) {
+    keys.forEach((item, i) => {
+      params += item + "=" + data[item];
+      if (i != keys.length - 1) params += "&";
+    });
+  }
+
+  console.log("== getParams: retorno da funcao ==");
+  console.log(params);
+
+  return params;
 }
