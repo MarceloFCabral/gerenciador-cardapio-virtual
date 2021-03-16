@@ -1,9 +1,9 @@
 import React from 'react';
-import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph } from 'react-native-paper';
+import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph, List } from 'react-native-paper';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { Centered, FullScreen, GeneralView, TouchableFullScreen } from '../views/Views';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, TextInput as NativeTextInput } from 'react-native';
 import styled from 'styled-components/native';
 import theme from '../../../styles/theme';
 
@@ -12,6 +12,7 @@ const PRIMARY_COLOR = theme.colors.primary;
 const GREY = theme.colors.disabled;
 const ICON_GREY = "#ababab";
 
+//---- Estilos de componentes básicos do React Native e de componentes do React Native Paper ----
 export const Button = styled(PButton)`
   justify-content: center;
 	margin-vertical: 5%
@@ -78,6 +79,40 @@ export const ItemView = ({ title, text, iconName }) => (
 	</ItemContainer>
 );
 
+//---- Input de texto multilinha com estilização do Paper ----
+export const MultilineTextInput = ({ mode, label, value, size, onChangeText }) => (
+	<TextInput
+		mode={mode}
+		label={label}
+		value={value}
+		render={() =>
+			<NativeTextInput
+				value={value}
+				multiline={true}
+				textAlignVertical="top"
+				style={{ height: size, paddingHorizontal: 13, fontSize: 15, marginTop: 7 }}
+				onChangeText={text => onChangeText(text)}
+			/>
+		}
+	/>
+);
+
+//---- Lista usando List.Item da RNPaper ----
+export const ItemList = ({ data, onPress }) => (
+	<>
+		{data.map(item =>
+			<View key={item.id} style={{ borderColor: ICON_GREY, borderWidth: 1, borderRadius: 5, marginBottom: '4%' }}>
+				<List.Item
+					title={item.nome}
+					description={item.descricao}
+					onPress={() => onPress(item)}
+				/>
+			</View>
+		)}
+	</>
+);
+
+
 //---- Botões e outros elementos "atuadores" ----
 
 //botão com animação de toque e borda inferior (estilo iFood)
@@ -85,7 +120,6 @@ export const RippleButton = ({ title, text, onPress }) => (
 	<TouchableRipple
 		onPress={() => onPress()}
 		rippleColor={GREY}
-		style={{ marginTop: '8%' }}
 	>
 		<ItemView title={title} text={text} iconName="chevron-right" />
 	</TouchableRipple>

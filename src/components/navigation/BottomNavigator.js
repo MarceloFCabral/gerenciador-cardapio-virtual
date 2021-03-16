@@ -24,25 +24,7 @@ const BottomNavigator = () => {
     { key: 'visualizacao', title: 'Ver cardápio', icon: 'history' },
     { key: 'configuracoes', title: 'Configurações', icon: 'history' },
   ]);
-
-  //const [dataLoaded, setDataLoaded] = React.useState([false, false, false, false, false]);
-  //const [loadData] = React.useState([]);
-  /*
-  const changeTab = i => {
-    if (dataLoaded[i] === false)
-      loadData[i]();
-  };
-  */
-  //let tokenObj = { token: token, setToken: setToken };
-  /*
-  const renderScene = BottomNavigation.SceneMap({
-    estabelecimento: TelaEstabelecimento,
-    categorias: Categorias,
-    produtos: Produtos,
-    visualizacao: Visualizacao,
-    configuracoes: Configuracoes
-  });
-  */
+  
 
   useEffect(() => {console.log("=== TOKEN NO COMPONENTE BOTTOMNAVIGATOR ==="); console.log(token)}, []);
 

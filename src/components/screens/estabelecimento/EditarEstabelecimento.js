@@ -1,59 +1,49 @@
 import React, { useContext } from 'react';
-import { TouchableStdScreen, TextInput, Button } from '../../ui/Ui';
-import { TextInput as NativeTextInput } from 'react-native';
+import { TouchableStdScreen, TextInput, Button, MultilineTextInput } from '../../ui/Ui';
 import { EstabelecimentoContext } from '../../context/EstabelecimentoContext';
 import { TokenContext } from '../../context/TokenContext';
-import { updateEstabelecimento } from '../../../network';
+import { updateEstabelecimento, createEstabelecimento } from '../../../network';
 
-/*
--- DANDO ERRO NESTA TELA, VERIFICAR --
-*/
-const TelaEditarEstabelecimento = ({ navigation }) => {
+const TelaEditarEstabelecimento = ({ route, navigation }) => {
+  console.log("-- route.params.status --");
+  console.log(route.params.status);
+  const edit = route.params.status == 'e';
   const estabContextData = useContext(EstabelecimentoContext);
   const tokenContextData = useContext(TokenContext);
 
-  const [nome, setNovoNome] = React.useState(estabContextData.nome);
-  const [descricao, setNovaDesc] = React.useState(estabContextData.descricao);
-  const [endereco, setNovoEnd] = React.useState(estabContextData.endereco);
+  const [nome, setNovoNome] = React.useState(edit ? estabContextData.nome : "");
+  const [descricao, setNovaDesc] = React.useState(edit ? estabContextData.descricao : "");
+  const [endereco, setNovoEnd] = React.useState(edit ? estabContextData.endereco : "");
+
+  const titleStr = (edit ? "Editar " : "Criar ") + "Estabelecimento";
 
   return (
-    <TouchableStdScreen title="Editar Estabelecimento">
+    <TouchableStdScreen title={titleStr}>
       <TextInput
         mode="outlined"
         label="Nome"
         value={nome}
         onChangeText={text => setNovoNome(text)}
       />
-      <TextInput
+      <MultilineTextInput
         mode="outlined"
         label="Descrição"
         value={descricao}
-        render={() => 
-          <NativeTextInput
-            value={descricao}
-            multiline={true}
-            textAlignVertical="top"
-            style={{ height: 100, paddingHorizontal: 13, fontSize: 15 }}
-            onChangeText={text => setNovaDesc(text)}
-          />
-        }
+        size={100}
+        onChangeText={setNovaDesc}
       />
-      <TextInput
+      <MultilineTextInput
         mode="outlined"
         label="Endereço"
         value={endereco}
-        render={() =>
-          <NativeTextInput
-            value={endereco}
-            multiline={true}
-            textAlignVertical="top"
-            style={{ height: 80, paddingHorizontal: 13, fontSize: 15 }}
-            onChangeText={text => setNovoEnd(text)}
-          />
-        }
+        size={80}
+        onChangeText={setNovoEnd}
       />
-      <Button mode="contained" onPress={() => updateEstabelecimento({nome, descricao, endereco}, estabContextData, tokenContextData, navigation)}>
-        SALVAR
+      <Button mode="contained" onPress={
+        () => edit ? updateEstabelecimento({nome, descricao, endereco}, estabContextData, tokenContextData, navigation) :
+                     createEstabelecimento({nome, descricao, endereco}, estabContextData, tokenContextData, navigation)
+      }>
+        {edit ? "SALVAR" : "CRIAR"}
       </Button>
     </TouchableStdScreen>
   );

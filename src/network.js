@@ -1,8 +1,5 @@
 import { getParams } from './utils';
 import { Alert } from "react-native";
-//import { useContext } from 'react';
-//import { TokenContext } from './components/context/TokenContext';
-//import { EstabelecimentoContext } from './components/context/EstabelecimentoContext';
 
 //URL e rotas
 const URL_API = "http://192.168.1.106/cardapio-virtual-api/public/api";
@@ -46,9 +43,11 @@ export async function put(route, params, token) {
   });
 }
 
+//---- login ----
+
 export async function login(userData, navigation, setToken) { //userData = objeto js com chaves user e password -> obrigatório
   let r = await post(ROTAS.login, userData);
-  if (r.ok === true) {
+  if (r.ok) {
     r = await r.json();
     setToken(r.token);
     console.log("método LOGIN ---- passou setToken");
@@ -58,6 +57,8 @@ export async function login(userData, navigation, setToken) { //userData = objet
   }
 }
 
+//---- ESTABELECIMENTO ----
+
 export async function updateEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
   const { setNome, setDesc, setEnd } = estabContextData;
   const { token, setToken } = tokenContextData;
@@ -65,7 +66,7 @@ export async function updateEstabelecimento(newEstabData, estabContextData, toke
   console.log("-- id do estabelecimento -- : " + estabContextData.id);
 
   let r = await put(ROTAS.estabelecimentoId + estabContextData.id, getParams("estabelecimento", newEstabData), token);
-  if (r.ok === true) {
+  if (r.ok) {
     r = await r.json();
     setToken(r.token);
     setNome(newEstabData.nome);
@@ -78,4 +79,54 @@ export async function updateEstabelecimento(newEstabData, estabContextData, toke
     console.log(r);
     Alert.alert("Ocorreu um erro. Tente novamente.");
   }
+}
+
+export async function createEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
+  const { setNome, setDesc, setEnd } = estabContextData;
+  const { token, setToken } = tokenContextData;
+
+  let r = await post(ROTAS.estabelecimento, newEstabData, token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    setNome(newEstabData.nome);
+    setDesc(newEstabData.descricao);
+    setEnd(newEstabData.endereco);
+    Alert.alert("Estabelecimento criado com sucesso!");
+    navigation.goBack();
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
+  }
+}
+
+export async function fetchEstabelecimento(estabContextData, tokenContextData) {
+  const { id, setNome, setDesc, setEnd } = estabContextData;
+  const { token, setToken } = tokenContextData;
+  let r = await get(ROTAS.estabelecimentoId, id, token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    console.log("=== token retornado fetchEstabelecimento ===");
+    console.log(r.token);
+    r = r.estabelecimento; //sugerir mudança no retorno e não precisar de selecionar objeto estabelecimento da requisição
+    setNome(r.nome);
+    setDesc(r.descricao);
+    setEnd(r.endereco);
+  }
+}
+
+export async function getEstabelecimentos(tokenContextData) {
+  const { token, setToken } = tokenContextData;
+  let r = await get(ROTAS.estabelecimento, "", token);
+  if (r.ok) {
+    r = await r.json();
+    console.log("retorno getEstabelecimentos");
+    console.log(r);
+    setToken(r.token);
+    return r.estabelecimento;
+  }
+
+  return null;
 }
