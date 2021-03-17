@@ -5,8 +5,6 @@ import { TokenContext } from '../../context/TokenContext';
 import { updateEstabelecimento, createEstabelecimento } from '../../../network';
 
 const TelaEditarEstabelecimento = ({ route, navigation }) => {
-  console.log("-- route.params.status --");
-  console.log(route.params.status);
   const edit = route.params.status == 'e';
   const estabContextData = useContext(EstabelecimentoContext);
   const tokenContextData = useContext(TokenContext);

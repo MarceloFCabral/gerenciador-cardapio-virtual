@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { getEstabelecimentos } from '../../../network';
-import { ItemList, StdScreen } from '../../ui/Ui';
+import { ItemList, StdScreen, Loading } from '../../ui/Ui';
 import { TokenContext } from '../../context/TokenContext';
 import { ScrollView } from 'react-native';
 import { EstabelecimentoContext } from '../../context/EstabelecimentoContext';
@@ -8,11 +8,13 @@ import { EstabelecimentoContext } from '../../context/EstabelecimentoContext';
 const TelaSelecionarEstabelecimento = ({ navigation }) => {
   const tokenContextData = useContext(TokenContext);
   const estabContextData = useContext(EstabelecimentoContext);
-  const [dados, setDados] = React.useState(null);
-  const setContextData = (item) => {
+  const { reload, estabArray } = estabContextData;
+  const [loading, setLoading] = React.useState(reload ? true : false);
+  const setContextData = item => {
     const { setId, setNome, setDesc, setEnd } = estabContextData;
     setId(item.id);
     setNome(item.nome);
+
     setDesc(item.descricao);
     setEnd(item.endereco);
     navigation.goBack();
@@ -20,14 +22,19 @@ const TelaSelecionarEstabelecimento = ({ navigation }) => {
 
   useEffect(
     () => {
-      getEstabelecimentos(tokenContextData).then(r => setDados(r));
+      const { setReload, setEstabArray } = estabContextData;
+      if (reload) {
+        getEstabelecimentos(tokenContextData, setEstabArray).then(() => setLoading(false));
+        setReload(false);
+      }
     }, []
   );
   return (
     <StdScreen title="Selecionar Estabelecimento">
+      {loading ? <Loading /> : <>
       <ScrollView>
-        {dados && <ItemList data={dados} onPress={setContextData} />}
-      </ScrollView>
+        {estabArray && <ItemList data={estabArray} onPress={setContextData} />}
+      </ScrollView></>}
     </StdScreen>
   );
 };

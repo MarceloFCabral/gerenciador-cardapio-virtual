@@ -7,10 +7,19 @@ export const EstabelecimentoProvider = ({ children }) => {
   const [nome, setNome] = React.useState('');
   const [descricao, setDesc] = React.useState('');
   const [endereco, setEnd] = React.useState('');
+  const [estabArray, setEstabArray] = React.useState(null);
+  const [reload, setReload] = React.useState(true);
 
   return (
     <EstabelecimentoContext.Provider 
-      value={{ id, setId, nome, setNome, descricao, setDesc, endereco, setEnd }}
+      value={{
+        id, setId, 
+        nome, setNome, 
+        descricao, setDesc, 
+        endereco, setEnd, 
+        reload, setReload,
+        estabArray, setEstabArray
+      }}
     >
       {children}
     </EstabelecimentoContext.Provider>

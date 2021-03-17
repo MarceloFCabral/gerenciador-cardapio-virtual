@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph, List } from 'react-native-paper';
+import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph, List, ActivityIndicator } from 'react-native-paper';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { Centered, FullScreen, GeneralView, TouchableFullScreen } from '../views/Views';
@@ -9,6 +9,7 @@ import theme from '../../../styles/theme';
 
 //constantes
 const PRIMARY_COLOR = theme.colors.primary;
+const SECONDARY_COLOR = theme.colors.accent;
 const GREY = theme.colors.disabled;
 const ICON_GREY = "#ababab";
 
@@ -67,6 +68,9 @@ export const ItemContainer = styled.View`
 */
 
 //---- Elementos genéricos ----
+
+//indicador de atividade / loading
+export const Loading = () => <ActivityIndicator animating={true} size="large" color={SECONDARY_COLOR} />
 
 //view com título, texto e borda inferior (estilo iFood)
 export const ItemView = ({ title, text, iconName }) => (

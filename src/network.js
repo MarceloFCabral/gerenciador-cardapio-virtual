@@ -10,7 +10,11 @@ export const ROTAS = {
   estabelecimentoId: "/estabelecimento/"
 }
 
-
+/*
+------------------------------
+| Métodos de requisição HTTP |
+------------------------------
+*/
 export function post(route, body, token) {
   let headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
   if (typeof token != "undefined") headers['Authorization'] = 'Bearer ' + token;
@@ -43,8 +47,11 @@ export async function put(route, params, token) {
   });
 }
 
-//---- login ----
-
+/*
+-------------------
+| Função de login |
+-------------------
+*/
 export async function login(userData, navigation, setToken) { //userData = objeto js com chaves user e password -> obrigatório
   let r = await post(ROTAS.login, userData);
   if (r.ok) {
@@ -57,21 +64,27 @@ export async function login(userData, navigation, setToken) { //userData = objet
   }
 }
 
-//---- ESTABELECIMENTO ----
+/*
+--------------------------------------------------------------------
+| Procedimentos e funções relacionadas ao CRUD de Estabelecimentos |
+--------------------------------------------------------------------
+*/
 
+//update
 export async function updateEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
-  const { setNome, setDesc, setEnd } = estabContextData;
+  const { id, setNome, setDesc, setEnd, setReload } = estabContextData;
   const { token, setToken } = tokenContextData;
 
-  console.log("-- id do estabelecimento -- : " + estabContextData.id);
+  console.log("-- id do estabelecimento -- : " + id);
 
-  let r = await put(ROTAS.estabelecimentoId + estabContextData.id, getParams("estabelecimento", newEstabData), token);
+  let r = await put(ROTAS.estabelecimentoId + id, getParams("estabelecimento", newEstabData), token);
   if (r.ok) {
     r = await r.json();
     setToken(r.token);
     setNome(newEstabData.nome);
     setDesc(newEstabData.descricao);
     setEnd(newEstabData.endereco);
+    setReload(true);
     Alert.alert("Dados atualizados com sucesso!");
     navigation.goBack();
   } else {
@@ -81,8 +94,9 @@ export async function updateEstabelecimento(newEstabData, estabContextData, toke
   }
 }
 
+//create
 export async function createEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
-  const { setNome, setDesc, setEnd } = estabContextData;
+  const { setNome, setDesc, setEnd, setReload } = estabContextData;
   const { token, setToken } = tokenContextData;
 
   let r = await post(ROTAS.estabelecimento, newEstabData, token);
@@ -92,6 +106,7 @@ export async function createEstabelecimento(newEstabData, estabContextData, toke
     setNome(newEstabData.nome);
     setDesc(newEstabData.descricao);
     setEnd(newEstabData.endereco);
+    setReload(true);
     Alert.alert("Estabelecimento criado com sucesso!");
     navigation.goBack();
   } else {
@@ -101,6 +116,7 @@ export async function createEstabelecimento(newEstabData, estabContextData, toke
   }
 }
 
+//read estabelecimento único
 export async function fetchEstabelecimento(estabContextData, tokenContextData) {
   const { id, setNome, setDesc, setEnd } = estabContextData;
   const { token, setToken } = tokenContextData;
@@ -117,7 +133,8 @@ export async function fetchEstabelecimento(estabContextData, tokenContextData) {
   }
 }
 
-export async function getEstabelecimentos(tokenContextData) {
+//read todos os estabelecimentos
+export async function getEstabelecimentos(tokenContextData, setEstabArray) {
   const { token, setToken } = tokenContextData;
   let r = await get(ROTAS.estabelecimento, "", token);
   if (r.ok) {
@@ -125,8 +142,6 @@ export async function getEstabelecimentos(tokenContextData) {
     console.log("retorno getEstabelecimentos");
     console.log(r);
     setToken(r.token);
-    return r.estabelecimento;
+    setEstabArray(r.estabelecimento);
   }
-
-  return null;
 }

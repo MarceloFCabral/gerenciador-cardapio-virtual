@@ -73,3 +73,33 @@ export function getParams(paramsType, data) {
 
   return params;
 }
+
+const binarySearchId = (id, list) => {
+  let first = 0;
+  let last = list.length - 1;
+  let position = -1;
+  let found = false;
+  let middle;
+
+  while (found === false && first <= last) {
+    middle = Math.floor((first + last)/2);
+    if (list[middle].id == id) {
+      found = true;
+      position = middle;
+    } else if (list[middle].id > id) {
+      last = middle - 1;
+    } else {
+      first = middle + 1;
+    }
+  }
+  return position;
+}
+
+
+//retorna false se arranjos contendo objetos com dados da API são diferentes, true caso contrário
+export function equalsObjArr(a, b) {
+  for (o in a)
+    if (binarySearchId(o.id, b) == -1) return false;
+    
+  return true;
+}
