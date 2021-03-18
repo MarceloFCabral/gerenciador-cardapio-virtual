@@ -7,21 +7,10 @@ import { Centered, CenteredRow } from '../../views/Views';
 
 const TelaDadosEstabelecimento = ({ navigation }) => {
   const estabContextData = useContext(EstabelecimentoContext);
-  const tokenContextData = useContext(TokenContext);
   const { nome, descricao, endereco } = estabContextData;
-  const [loading, setLoading] = React.useState(true);
-  
-  //fetch 
-  useEffect(
-    () => {
-      fetchEstabelecimento(estabContextData, tokenContextData).then(() => setLoading(false));
-    }, []
-  );
-  
 
   return (
     <StdScreen title="Estabelecimento">
-      {loading ? <Loading /> : <>
       <LoginImage
         source={require('../../../../assets/images/elo-apps.png')}
       />
@@ -34,9 +23,11 @@ const TelaDadosEstabelecimento = ({ navigation }) => {
           <EditButton onPress={() => navigation.navigate("editarEstabelecimento", { status: 'e' })} />
           <ChangeButton onPress={() => navigation.navigate("selecionarEstabelecimento")} />
         </CenteredRow>
-      </Centered></>}
+      </Centered>
     </StdScreen>
   );
 };
-
+/*
+{loading ? <Loading /> : <> </>}
+*/
 export default TelaDadosEstabelecimento;
