@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react';
-import { StdScreen, LoginImage, ItemView, EditButton, ChangeButton, CreateButton, Loading } from '../../ui/Ui';
-import { fetchEstabelecimento } from '../../../network';
+import React, { useContext } from 'react';
+import { StdScreen, LoginImage, ItemView, EditButton, ChangeButton, CreateButton } from '../../ui/Ui';
 import { EstabelecimentoContext } from '../../context/EstabelecimentoContext';
-import { TokenContext } from '../../context/TokenContext';
 import { Centered, CenteredRow } from '../../views/Views';
 
 const TelaDadosEstabelecimento = ({ navigation }) => {
+  console.log("renderizando TelaDadosEstabelecimento");
   const estabContextData = useContext(EstabelecimentoContext);
   const { nome, descricao, endereco } = estabContextData;
 

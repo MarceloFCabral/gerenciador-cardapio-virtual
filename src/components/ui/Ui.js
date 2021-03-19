@@ -1,8 +1,15 @@
 import React from 'react';
-import { TextInput as PTextInput, Button as PButton, Headline as PHeadline, Subheading as PSubheading, TouchableRipple, Paragraph, List, ActivityIndicator } from 'react-native-paper';
+import { 
+	TextInput as PTextInput, 
+	Button as PButton,
+	Headline as PHeadline,
+	Subheading as PSubheading,
+	TouchableRipple, Paragraph,
+	List, ActivityIndicator 
+} from 'react-native-paper';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import { Centered, FullScreen, GeneralView, TouchableFullScreen } from '../views/Views';
+import { Centered, FullScreen, GeneralView, TouchableFullScreen, CenteredRow } from '../views/Views';
 import { View, TouchableOpacity, TextInput as NativeTextInput } from 'react-native';
 import styled from 'styled-components/native';
 import theme from '../../../styles/theme';
@@ -12,6 +19,7 @@ const PRIMARY_COLOR = theme.colors.primary;
 const SECONDARY_COLOR = theme.colors.accent;
 const GREY = theme.colors.disabled;
 const ICON_GREY = "#ababab";
+const SURFACE_COLOR = theme.colors.surface;
 
 //---- Estilos de componentes básicos do React Native e de componentes do React Native Paper ----
 export const Button = styled(PButton)`
@@ -164,6 +172,79 @@ export const ChangeButton = ({ onPress }) => (
 		</TouchableOpacity>
 	</Centered>
 );
+
+//Componente de categoria
+export const CategoriaAcc = ({ title, desc, children }) => (
+	<List.Accordion
+		title={title}
+		description={desc}
+		style={{ backgroundColor: SURFACE_COLOR }}
+	>
+		<View style={{ marginLeft: 15 }}>
+			{children}
+		</View>
+	</List.Accordion>
+);
+
+//Componente de produto
+export const ProdutoAcc = ({ title, desc, val }) => (
+	<View style={{ flexDirection: 'row' }}>
+		<List.Item 
+			title={title}
+			description={desc}
+			style={{ flex: 4 }}
+		/>
+		<Centered style={{ flex: 1 }}>
+			<Paragraph>{val}</Paragraph>
+		</Centered>
+	</View>
+);
+
+//tentativa implementação accordion
+export const Categoria = ({ title, desc, exp, children, onPressEdit, onPressAdd }) => {
+	const [expanded, setExpanded] = React.useState(exp);
+
+	return (
+		<>
+			<TouchableRipple
+				onPress={() => setExpanded(!expanded)}
+				rippleColor={ICON_GREY}
+				style={{ backgroundColor: SURFACE_COLOR }}
+			>
+				<CenteredRow
+					style={{ padding: 10 }}
+				>
+					<View style={{ flex: 7 }}>
+						<Paragraph style={{ fontSize: 18, color: expanded ? PRIMARY_COLOR : "#000000" }}>{title}</Paragraph>
+						<Paragraph numberOfLines={2} style={{ fontSize: 14, color: ICON_GREY }}>{desc}</Paragraph>
+					</View>
+					<TouchableOpacity
+						onPress={() => onPressAdd()}
+						activeOpacity={0.5}
+						style={{ flex: 2, alignItems: 'center' }}
+					>	
+						<MIcon name="plus" size={24} color={ICON_GREY} />
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => onPressEdit()}
+						activeOpacity={0.5}
+						style={{ flex: 2, alignItems: 'center' }}
+					>
+						<MIcon name="pencil" size={24} color={ICON_GREY} />
+					</TouchableOpacity>
+					{expanded ? 
+					<MIcon name="chevron-down" size={24} color={ICON_GREY} style={{ flex: 1 }}/> : 
+					<MIcon name="chevron-up" size={24} color={ICON_GREY} style={{ flex: 1 }} />}
+				</CenteredRow>
+			</TouchableRipple>
+			{expanded &&
+			<View style={{ marginLeft: 15 }}>
+				{children}
+			</View>}
+		</>
+	);
+}
+
 
 //---- Telas e views genéricas contendo elementos da UI ----
 

@@ -7,7 +7,9 @@ export const ROTAS = {
   registro: "/register",
   login: "/login",
   estabelecimento: "/estabelecimento",
-  estabelecimentoId: "/estabelecimento/"
+  estabelecimentoId: "/estabelecimento/",
+  categoria: "/categoria",
+  categoriaId: "/categoria/"
 }
 
 /*
@@ -70,30 +72,6 @@ export async function login(userData, navigation, setToken) { //userData = objet
 --------------------------------------------------------------------
 */
 
-//update
-export async function updateEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
-  const { id, setNome, setDesc, setEnd, setReload } = estabContextData;
-  const { token, setToken } = tokenContextData;
-
-  console.log("-- id do estabelecimento -- : " + id);
-
-  let r = await put(ROTAS.estabelecimentoId + id, getParams("estabelecimento", newEstabData), token);
-  if (r.ok) {
-    r = await r.json();
-    setToken(r.token);
-    setNome(newEstabData.nome);
-    setDesc(newEstabData.descricao);
-    setEnd(newEstabData.endereco);
-    setReload(true);
-    Alert.alert("Dados atualizados com sucesso!");
-    navigation.goBack();
-  } else {
-    r = await r.json();
-    console.log(r);
-    Alert.alert("Ocorreu um erro. Tente novamente.");
-  }
-}
-
 //create
 export async function createEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
   const { setNome, setDesc, setEnd, setReload } = estabContextData;
@@ -143,5 +121,57 @@ export async function getEstabelecimentos(tokenContextData, setEstabArray) {
     console.log(r);
     setToken(r.token);
     setEstabArray(r.estabelecimento);
+  }
+}
+
+//update
+export async function updateEstabelecimento(newEstabData, estabContextData, tokenContextData, navigation) {
+  const { id, setNome, setDesc, setEnd, setReload } = estabContextData;
+  const { token, setToken } = tokenContextData;
+
+  console.log("-- id do estabelecimento -- : " + id);
+
+  let r = await put(ROTAS.estabelecimentoId + id, getParams("estabelecimento", newEstabData), token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    setNome(newEstabData.nome);
+    setDesc(newEstabData.descricao);
+    setEnd(newEstabData.endereco);
+    setReload(true);
+    Alert.alert("Dados atualizados com sucesso!");
+    navigation.goBack();
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
+  }
+}
+
+/*
+--------------------------------------------------------------
+| Procedimentos e funções relacionadas ao CRUD de Categorias |
+--------------------------------------------------------------
+*/
+
+//create
+export async function createCategoria(newCatData, catContextData, tokenContextData, navigation) {
+  const { setNome, setDesc, setCatPaiId, setReload } = catContextData;
+  const { token, setToken } = tokenContextData;
+
+  let r = await post(ROTAS.categoria, newCatData, token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    setNome(newCatData.nome);
+    setDesc(newCatData.descricao);
+    setEnd(newCatData.endereco);
+    setReload(true);
+    Alert.alert("Categoria criada com sucesso!");
+    navigation.goBack();
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
   }
 }

@@ -8,7 +8,7 @@ const theme = {
 		primary: '#2f3d74',
 		accent: '#4a7c7f',
 		background: '#ffffff',
-		surface: '#ffebd6',
+		surface: '#e6f4f5',
 		text: '#000000',
 		disabled: '#e6e6e6',
 		placeholder: '#8c8c8c',
