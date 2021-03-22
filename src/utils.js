@@ -13,6 +13,8 @@
   - produto -
     * criar produto
 */
+import { Picker } from '@react-native-picker/picker';
+
 
 function getKeys(reqType) {
   let keys = null;
@@ -73,6 +75,9 @@ export function getParams(paramsType, data) {
 
   return params;
 }
+
+//testar essa função.
+export const pickerArrRender = (arr) => arr.map(v => <Picker.Item label={v.nome} value={v.id} key={v.id}/>);
 
 const binarySearchId = (id, list) => {
   let first = 0;

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Paragraph } from 'react-native-paper';
 import { StdScreen, Categoria, Produto } from '../../ui/Ui';
 //import theme from '../../../../styles/theme';
 
@@ -7,29 +6,29 @@ const TelaDadosCategorias = () => {
   return (
     <StdScreen title="Categorias">
       <Categoria
-        title="teste"
-        desc="desc teste blablablabla"
+        title="Bebidas"
+        desc="Confira nossa seleção de bebidas geladinhas."
         exp={false}
         onPressEdit={() => console.log("press edit")}
         onPressAdd={() => console.log("press add")}
       >
-        <Paragraph>Teste</Paragraph>
-      </Categoria>
-    </StdScreen>
-  );
-  /*
-  return (
-    <StdScreen title="Categorias">
-      <Categoria title="Bebidas" desc="Bebidas variadas do nosso restaurante">
-        <Produto title="Água" desc="Água mineral geladinha" val="3,00" />
-        <Categoria title="Cervejas" desc="Cervejas geladinhas!">
-          <Produto title="Skol Latão" desc="Uma cerveja horrível" val="3,50" />
-          <Produto title="Original 600ml" desc="Uma cerveja melhorzinha" val="8,00" />
+        <Categoria
+          title="Cervejas"
+          desc="Cervejas geladas e de rótulos variados."
+          exp={false}
+          onPressEdit={() => console.log("press edit")}
+          onPressAdd={() => console.log("press add")}
+        >
+          <Produto 
+            title="Cerveja Colorado 600ml"
+            desc="Uma cerveja bem nice"
+            val="9,00"
+            onPressEdit={() => console.log("press edit produto")}
+          />
         </Categoria>
       </Categoria>
     </StdScreen>
   );
-  */
 }
 
 

@@ -155,19 +155,38 @@ export async function updateEstabelecimento(newEstabData, estabContextData, toke
 */
 
 //create
-export async function createCategoria(newCatData, catContextData, tokenContextData, navigation) {
-  const { setNome, setDesc, setCatPaiId, setReload } = catContextData;
+export async function createCategoria(newCatData, catContextData, tokenContextData, navigation) { //idx do arranjo e estabelecimento_id passados em newCatData
+  const { pushCatData, setReload } = catContextData;
   const { token, setToken } = tokenContextData;
 
   let r = await post(ROTAS.categoria, newCatData, token);
   if (r.ok) {
     r = await r.json();
     setToken(r.token);
-    setNome(newCatData.nome);
-    setDesc(newCatData.descricao);
-    setEnd(newCatData.endereco);
+    pushCatData(newCatData);
     setReload(true);
     Alert.alert("Categoria criada com sucesso!");
+    navigation.goBack();
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
+  }
+}
+
+//read
+
+//update
+export async function updateCategoria(newCatData, categoria, catContextData, tokenContextData, navigation) {
+  const { setReload } = catContextData;
+  const { token, setToken } = tokenContextData;
+  let r = await put(ROTAS.categoriaId + categoria.id, getParams("categoria", newCatData), token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    categoria = { ...newCatData };
+    setReload(true);
+    Alert.alert("Categoria atualizada com sucesso!");
     navigation.goBack();
   } else {
     r = await r.json();

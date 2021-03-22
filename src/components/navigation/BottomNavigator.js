@@ -5,6 +5,7 @@ import React from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
 import EstabelecimentoNav from './EstabelecimentoNav';
 import CategoriasNav from './CategoriasNav';
+import { EstabelecimentoProvider } from '../context/EstabelecimentoContext';
 
 const Produtos = () => <Text>Produtos</Text>;
 
@@ -38,11 +39,13 @@ const BottomNavigator = () => {
   }
 
   return (
-    <BottomNavigation
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-    />
+    <EstabelecimentoProvider>
+      <BottomNavigation
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+      />
+    </EstabelecimentoProvider>
   );
 }
 

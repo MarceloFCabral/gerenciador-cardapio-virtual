@@ -201,7 +201,7 @@ export const ProdutoAcc = ({ title, desc, val }) => (
 );
 
 //tentativa implementação accordion
-export const Categoria = ({ title, desc, exp, children, onPressEdit, onPressAdd }) => {
+export const Categoria = ({ title, desc, children, exp, onPressEdit, onPressAdd }) => {
 	const [expanded, setExpanded] = React.useState(exp);
 
 	return (
@@ -209,13 +209,11 @@ export const Categoria = ({ title, desc, exp, children, onPressEdit, onPressAdd 
 			<TouchableRipple
 				onPress={() => setExpanded(!expanded)}
 				rippleColor={ICON_GREY}
-				style={{ backgroundColor: SURFACE_COLOR }}
+				style={{ backgroundColor: SURFACE_COLOR, borderColor: ICON_GREY, borderWidth: 1 }}
 			>
-				<CenteredRow
-					style={{ padding: 10 }}
-				>
+				<CenteredRow style={{ padding: 10 }}>
 					<View style={{ flex: 7 }}>
-						<Paragraph style={{ fontSize: 18, color: expanded ? PRIMARY_COLOR : "#000000" }}>{title}</Paragraph>
+						<Paragraph style={{ fontSize: 17, color: expanded ? PRIMARY_COLOR : "#000000" }}>{title}</Paragraph>
 						<Paragraph numberOfLines={2} style={{ fontSize: 14, color: ICON_GREY }}>{desc}</Paragraph>
 					</View>
 					<TouchableOpacity
@@ -244,6 +242,25 @@ export const Categoria = ({ title, desc, exp, children, onPressEdit, onPressAdd 
 		</>
 	);
 }
+
+export const Produto = ({ title, desc, val, onPressEdit }) => (
+	<CenteredRow style={{ padding: 10 }}>
+		<View style={{ flex: 2 }}>
+			<Paragraph style={{ fontSize: 16 }}>{title}</Paragraph>
+			<Paragraph numberOfLines={2} style={{ fontSize: 13, color: ICON_GREY }}>{desc}</Paragraph>
+		</View>
+		<Centered style={{ flex: 1 }}>
+			<Paragraph style={{ fontWeight: 'bold' }}>{val}</Paragraph>
+		</Centered>
+		<TouchableOpacity
+			onPress={() => onPressEdit()}
+			activeOpacity={0.5}
+			style={{ flex: 1, alignItems: 'center' }}
+		>
+			<MIcon name="pencil" size={24} color={ICON_GREY} />
+		</TouchableOpacity>
+	</CenteredRow>
+);
 
 
 //---- Telas e views genéricas contendo elementos da UI ----
