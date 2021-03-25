@@ -172,7 +172,7 @@ export const ChangeButton = ({ onPress }) => (
 		</TouchableOpacity>
 	</Centered>
 );
-
+/*
 //Componente de categoria
 export const CategoriaAcc = ({ title, desc, children }) => (
 	<List.Accordion
@@ -199,7 +199,7 @@ export const ProdutoAcc = ({ title, desc, val }) => (
 		</Centered>
 	</View>
 );
-
+*/
 //tentativa implementação accordion
 export const Categoria = ({ title, desc, children, exp, onPressEdit, onPressAdd }) => {
 	const [expanded, setExpanded] = React.useState(exp);

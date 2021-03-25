@@ -13,7 +13,7 @@ export const CategoriasProvider = ({ children }) => {
       catArray[idx] = newCatData;
   }
   */
-  const pushCatData = (newCatData) => catArray.push(newCatData);
+  const pushCatData = newCatData => catArray.push(newCatData);
 
   return (
     <CategoriasContext.Provider

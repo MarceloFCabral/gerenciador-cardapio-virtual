@@ -21,9 +21,7 @@ const TelaSelecionarEstabelecimento = ({ navigation }) => {
     setEnd(item.endereco);
     navigation.navigate("dadosEstabelecimento");
   };
-/*
-verificar pq reload não está tendo o valor mudado após alterar ou criar
-*/
+
   useEffect(
     () => {
       const { setReload, setEstabArray } = estabContextData;
@@ -39,7 +37,7 @@ verificar pq reload não está tendo o valor mudado após alterar ou criar
       <ScrollView>
         {estabArray.length == 0 ? <>
         <Paragraph>
-          {"Você ainda não possui nenhum estabelecimento cadastrado! Clique no ícone abaixo para criar um estabelecimento."}
+          Você ainda não possui nenhum estabelecimento cadastrado! Clique no ícone abaixo para criar um estabelecimento.
           </Paragraph>
         <CreateButton onPress={() => navigation.navigate("editarEstabelecimento", { status: 'c' })} /></> : 
         <ItemList data={estabArray} onPress={setContextData} />}

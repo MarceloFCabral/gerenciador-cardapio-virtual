@@ -14,6 +14,7 @@ const Visualizacao = () => <Text>Visualização</Text>;
 const Configuracoes = () => <Text>Configurações</Text>;
 
 const BottomNavigator = () => {
+  console.log("renderizando BottomNavigator");
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: 'estabelecimento', title: 'Estabelecimento', icon: 'album' },

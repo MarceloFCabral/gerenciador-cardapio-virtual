@@ -9,7 +9,8 @@ export const ROTAS = {
   estabelecimento: "/estabelecimento",
   estabelecimentoId: "/estabelecimento/",
   categoria: "/categoria",
-  categoriaId: "/categoria/"
+  categoriaId: "/categoria/",
+  produto: "/produto"
 }
 
 /*
@@ -59,9 +60,12 @@ export async function login(userData, navigation, setToken) { //userData = objet
   if (r.ok) {
     r = await r.json();
     setToken(r.token);
-    console.log("método LOGIN ---- passou setToken");
+    //console.log("método LOGIN ---- passou setToken");
     navigation.navigate("bottomNav");
   } else {
+    r = await r.json();
+    console.log("Retorno login");
+    console.log(r);
     Alert.alert("E-mail ou senha inválidos.");
   }
 }
@@ -102,8 +106,8 @@ export async function fetchEstabelecimento(estabContextData, tokenContextData) {
   if (r.ok) {
     r = await r.json();
     setToken(r.token);
-    console.log("=== token retornado fetchEstabelecimento ===");
-    console.log(r.token);
+    //console.log("=== token retornado fetchEstabelecimento ===");
+    //console.log(r.token);
     r = r.estabelecimento; //sugerir mudança no retorno e não precisar de selecionar objeto estabelecimento da requisição
     setNome(r.nome);
     setDesc(r.descricao);
@@ -117,8 +121,8 @@ export async function getEstabelecimentos(tokenContextData, setEstabArray) {
   let r = await get(ROTAS.estabelecimento, "", token);
   if (r.ok) {
     r = await r.json();
-    console.log("retorno getEstabelecimentos");
-    console.log(r);
+    //console.log("retorno getEstabelecimentos");
+    //console.log(r);
     setToken(r.token);
     setEstabArray(r.estabelecimento);
   }
@@ -174,7 +178,20 @@ export async function createCategoria(newCatData, catContextData, tokenContextDa
   }
 }
 
-//read
+//--> está retornando o arranjo <--
+//read todas as categorias
+export async function getCategorias(estabId, tokenContextData, setCatArray) {
+  const { token, setToken } = tokenContextData;
+  let r = await get(ROTAS.categoria, "?estabelecimento_id=" + estabId, token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    setCatArray(r.categoria);
+    return r.categoria;
+  }
+}
+
+//read categoria única
 
 //update
 export async function updateCategoria(newCatData, categoria, catContextData, tokenContextData, navigation) {
@@ -193,4 +210,55 @@ export async function updateCategoria(newCatData, categoria, catContextData, tok
     console.log(r);
     Alert.alert("Ocorreu um erro. Tente novamente.");
   }
+}
+
+/*
+------------------------------------------------------------
+| Procedimentos e funções relacionadas ao CRUD de Produtos |
+------------------------------------------------------------
+*/
+
+//create
+//tentando sem usar contexto exclusivo para produto. Passando arranjo como argumento ao invés disso
+export async function createProduto(prodArray, newProdData, catContextData, tokenContextData, navigation) {
+  const { setReload } = catContextData;
+  const { token, setToken } = tokenContextData;
+
+  let r = await post(ROTAS.produto, newProdData, token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    //pushCatData(newCatData);
+    prodArray.push(newProdData);
+    setReload(true);
+    Alert.alert("Produto criado com sucesso!");
+    navigation.goBack();
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
+  }
+}
+
+// --> está retornando o arranjo <--
+//read todas os produtos
+export async function getProdutos(catId, tokenContextData) {
+  console.log("Entrou no getProdutos");
+  let prodArr = [];
+  const { token, setToken } = tokenContextData;
+  let r = await get(ROTAS.produto, "?categoria_id=" + catId, token);
+  if (r.ok) {
+    r = await r.json();
+    console.log("retorno getProdutos");
+    console.log(r);
+    setToken(r.token);
+    prodArr = r.estabelecimento; //---> mudar nome da chave para "produtos" <---
+    //setCatArray(r.categoria);
+  } else {
+    r = await r.json();
+    console.log("erro getProdutos. Retorno:");
+    console.log(r);
+  }
+
+  return prodArr;
 }

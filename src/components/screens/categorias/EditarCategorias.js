@@ -40,6 +40,7 @@ const TelaEditarCategoria = ({ route, navigation }) => {
         onValueChange={value => setCatPaiId(value)}
       >
         {pickerArrRender(catArray)}
+        <Picker.Item label="Selecione uma categoria" value={-1} />
       </Picker>
       <Button mode="contained" onPress={
         () => edit ? updateCategoria({nome, descricao, categoria_pai_id, estabelecimento_id}, categoria, catContextData, tokenContextData, navigation) :
