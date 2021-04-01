@@ -3,7 +3,7 @@ import React from 'react';
 export const EstabelecimentoContext = React.createContext();
 
 export const EstabelecimentoProvider = ({ children }) => {
-  const [id, setId] = React.useState(1); //passando um para os testes da API
+  const [estabelecimento_id, setId] = React.useState(1); //passando um para os testes da API
   const [nome, setNome] = React.useState('');
   const [descricao, setDesc] = React.useState('');
   const [endereco, setEnd] = React.useState('');
@@ -13,7 +13,7 @@ export const EstabelecimentoProvider = ({ children }) => {
   return (
     <EstabelecimentoContext.Provider 
       value={{
-        id, setId, 
+        estabelecimento_id, setId, 
         nome, setNome, 
         descricao, setDesc, 
         endereco, setEnd, 

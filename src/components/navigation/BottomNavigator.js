@@ -5,13 +5,12 @@ import React from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
 import EstabelecimentoNav from './EstabelecimentoNav';
 import CategoriasNav from './CategoriasNav';
+import TelaConfiguracoes from '../screens/Configuracoes';
 import { EstabelecimentoProvider } from '../context/EstabelecimentoContext';
 
 const Produtos = () => <Text>Produtos</Text>;
 
 const Visualizacao = () => <Text>Visualização</Text>;
-
-const Configuracoes = () => <Text>Configurações</Text>;
 
 const BottomNavigator = () => {
   console.log("renderizando BottomNavigator");
@@ -35,7 +34,7 @@ const BottomNavigator = () => {
       case 'visualizacao':
         return <Visualizacao jumpTo={jumpTo} />;
       case 'configuracoes':
-        return <Configuracoes jumpTo={jumpTo} />;  
+        return <TelaConfiguracoes jumpTo={jumpTo} />;  
     }
   }
 

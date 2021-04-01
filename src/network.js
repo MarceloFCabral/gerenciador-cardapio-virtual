@@ -159,7 +159,8 @@ export async function updateEstabelecimento(newEstabData, estabContextData, toke
 */
 
 //create
-export async function createCategoria(newCatData, catContextData, tokenContextData, navigation) { //idx do arranjo e estabelecimento_id passados em newCatData
+//EDITAR ESSE MÉTODO PARA TRABALHAR SEM CONTEXTO PRÓPRIO DAS CATEGORIAS
+export async function createCategoria(newCatData, /*catContextData,*/ tokenContextData, navigation) { //idx do arranjo e estabelecimento_id passados em newCatData
   const { pushCatData, setReload } = catContextData;
   const { token, setToken } = tokenContextData;
 
@@ -180,21 +181,25 @@ export async function createCategoria(newCatData, catContextData, tokenContextDa
 
 //--> está retornando o arranjo <--
 //read todas as categorias
-export async function getCategorias(estabId, tokenContextData, setCatArray) {
-  const { token, setToken } = tokenContextData;
+export async function getCategorias(estabId, token, setToken) {
+  //const { token, setToken } = tokenContextData;
   let r = await get(ROTAS.categoria, "?estabelecimento_id=" + estabId, token);
   if (r.ok) {
     r = await r.json();
     setToken(r.token);
-    setCatArray(r.categoria);
-    return r.categoria;
+    return { categorias: r.categorias, token: r.token };
+  } else {
+    console.log("erro getCategorias");
+    r = await r.json();
+    console.log(r);
   }
 }
 
 //read categoria única
 
 //update
-export async function updateCategoria(newCatData, categoria, catContextData, tokenContextData, navigation) {
+//EDITAR ESSE MÉTODO PARA TRABALHAR SEM CONTEXTO PRÓPRIO DAS CATEGORIAS
+export async function updateCategoria(newCatData, categoria, /*catContextData,*/ tokenContextData, navigation) {
   const { setReload } = catContextData;
   const { token, setToken } = tokenContextData;
   let r = await put(ROTAS.categoriaId + categoria.id, getParams("categoria", newCatData), token);
@@ -240,25 +245,18 @@ export async function createProduto(prodArray, newProdData, catContextData, toke
   }
 }
 
-// --> está retornando o arranjo <--
 //read todas os produtos
-export async function getProdutos(catId, tokenContextData) {
-  console.log("Entrou no getProdutos");
-  let prodArr = [];
-  const { token, setToken } = tokenContextData;
-  let r = await get(ROTAS.produto, "?categoria_id=" + catId, token);
+export async function getProdutos(estabId, token, setToken) {
+  //const { token, setToken } = tokenContextData;
+  let r = await get(ROTAS.produto, "?estabelecimento_id=" + estabId, token);
   if (r.ok) {
     r = await r.json();
-    console.log("retorno getProdutos");
-    console.log(r);
     setToken(r.token);
-    prodArr = r.estabelecimento; //---> mudar nome da chave para "produtos" <---
-    //setCatArray(r.categoria);
+    return { produtos: r.produtos, token: r.token };
+
   } else {
+    console.log("erro getProdutos");
     r = await r.json();
-    console.log("erro getProdutos. Retorno:");
     console.log(r);
   }
-
-  return prodArr;
 }

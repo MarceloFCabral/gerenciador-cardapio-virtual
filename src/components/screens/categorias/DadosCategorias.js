@@ -7,7 +7,7 @@
   (
     Atualmente, para buscar uma Categoria ou Produto-filho, deve-se buscar sequencialmente por todo o arranjo uma Categoria/Produto cujo atributo "id" seja igual ao "id" da categoria pai.
     A busca sequencial possui um custo muito alto. Para reduzir esse custo, são possíveis as seguintes modificações:
-      1. 
+      [ver papel na mesa]
   )
 
 - Definir se usarei contexto para as Categorias ou não 
@@ -17,6 +17,8 @@
     não seja usado em nenhum outro componente (tirando o componente da tela de edição/criação de categorias), não vale a pena manter o arranjo no contexto e duplicar dados na memória.
     No entanto, manter a variável "reload" no contexto pode ser interessante pois nos propicia a rerenderização do componente da tela de visualização/dados imediatamente após a edição,
     não sendo necessária a focalização da tela para modificar os elementos visuais. Pode ser interessante, portanto, manter o contexto apenas com a variável "reload".
+    obs.: para evitar o uso do Contexto apenas com a variável Reload, é possível passar como parâmetro de rota (para a tela de edição) o seguinte objeto:
+    { status: 'c'/'e', setReload }. O uso de setReload no componente de edição triggeraria um rerender da tela de dados, atualizando os elementos do "DOM".
   )
 
 - Definir se usarei contexto para os Produtos ou não
@@ -36,99 +38,73 @@
     o setArray (método fornecido pelo Provider de cada contexto) na definição dos métodos.
   )
 */
-
+/*
+Tarefa atual: tentando NÃO usar Contexto para Categorias e Produtos.
+*/
 import React, { useContext, useEffect, useRef } from 'react';
 import { ScrollView } from 'react-native';
 import { Paragraph } from 'react-native-paper';
 import { getCategorias, getProdutos } from '../../../network';
 import { categoriasRender } from '../../../utils';
-import { CategoriasContext } from '../../context/CategoriasContext';
-//import { EstabelecimentoContext } from '../../context/EstabelecimentoContext';
+import { EstabelecimentoContext } from '../../context/EstabelecimentoContext';
 import { TokenContext } from '../../context/TokenContext';
 import { StdScreen, Loading } from '../../ui/Ui';
 
-
 const TelaDadosCategorias = () => {
-  const tokenContextData = useContext(TokenContext);
-  const catContextData = useContext(CategoriasContext);
-  const { estabelecimento_id, reload, catArray } = catContextData;
-  const prevDadosRef = useRef({estabelecimento_id, reload});
+  const { token, setToken } = useContext(TokenContext);
+  const estabContextData = useContext(EstabelecimentoContext);
+  const { estabelecimento_id } = estabContextData;
+  const [catObj, setCatObj] = React.useState({});
+  const [prodObj, setProdObj] = React.useState({});
+  const [reload, setReload] = React.useState(true);
+  const prevDadosRef = useRef({ estabelecimento_id, catObj, prodObj });
+  //talvez terei que usar set pras variáveis abaixo
   const newIdOrReload = prevDadosRef.current.estabelecimento_id != estabelecimento_id || reload == true;
+  const reRender = prevDadosRef.current.catObj != catObj && prevDadosRef.current.prodObj != prodObj;
+  console.log("valor de reRender =", reRender);
+  const [componentArr, setComponentArr] = React.useState([]);
   const [loading, setLoading] = React.useState(newIdOrReload);
-
-  //const [localCatArr, setLocalCatArr] = React.useState([]);
-  let localCatArr = [];
-  const [prodArr, setProdArr] = React.useState([]);
    
   console.log("newIdOrReload =", newIdOrReload);
-  //investigar em que momentos este efeito está sendo executado. Printar valores estabId, reload e newIdOrReload
+  
   useEffect(
     () => {
-      console.log("Entrou no useEffect DadosCategorias");
+      console.log("Entrou no useEffect newIdOrReload");
       if (newIdOrReload) {
-        console.log("Entrou no if do useEffect DadosCategorias");
-        const { setReload, setCatArray } = catContextData;
-        //---
-        const token0 = tokenContextData.token;
-        //--- 
-        getCategorias(estabelecimento_id, tokenContextData, setCatArray).then(categorias => {
-          localCatArr = categorias;
-          console.log("localCatArr =", localCatArr);
-          //---
-          if (token0 == tokenContextData.token) console.log("TOKEN NÃO SE MODIFICOU ENTRE getCategorias E getProdutos");
-          //---
-          let promiseArray = localCatArr.map(cat => {
-            console.log("entrou no catArray.map");
-            getProdutos(cat.id, tokenContextData).then(prodArr => {
-              console.log("Produtos de uma categoria =", prodArr);
-              setProdArr([...prodArr]);
-            }); //ineficiente. Criar endpoint para retornar produtos associados a um estabelecimento
+        console.log("Entrou no if (newIdOrReload)");
+        getCategorias(estabelecimento_id, token, setToken).then(({ categorias, token }) => {
+          setCatObj(categorias);
+          getProdutos(estabelecimento_id, token, setToken).then(({ produtos }) => {
+            setProdObj(produtos);
+            setReload(false);
           });
-          Promise.all(promiseArray).then(() => {setLoading(false); setReload(false);});
         });
       }
     }, [newIdOrReload]
   );
+
+  useEffect(
+    () => {
+      if (reRender) {
+        console.log("entrou no useEffect do reRender");
+        setComponentArr(categoriasRender(catObj, prodObj));
+        setLoading(false);
+      }
+    }, [reRender]
+  );
+
   return (
     <StdScreen title="Categorias">
       {loading ? <Loading /> : <>
       <ScrollView>
-        {catArray.length == 0 ? <>
+        {catObj.length == 0 ? <>
         <Paragraph>
           Você ainda não possui nenhuma categoria! Clique no ícone abaixo para criar uma categoria.
         </Paragraph></> :
-        categoriasRender(catArray, prodArr)}
+        componentArr}
       </ScrollView></>}
     </StdScreen>
   );
-  /*
-  return (
-    <StdScreen title="Categorias">
-      <Categoria
-        title="Bebidas"
-        desc="Confira nossa seleção de bebidas geladinhas."
-        exp={false}
-        onPressEdit={() => console.log("press edit")}
-        onPressAdd={() => console.log("press add")}
-      >
-        <Categoria
-          title="Cervejas"
-          desc="Cervejas geladas e de rótulos variados."
-          exp={false}
-          onPressEdit={() => console.log("press edit")}
-          onPressAdd={() => console.log("press add")}
-        >
-          <Produto 
-            title="Cerveja Colorado 600ml"
-            desc="Uma cerveja bem nice"
-            val="9,00"
-            onPressEdit={() => console.log("press edit produto")}
-          />
-        </Categoria>
-      </Categoria>
-    </StdScreen>
-  );
-  */
 }
 
 

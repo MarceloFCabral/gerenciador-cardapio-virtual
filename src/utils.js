@@ -33,10 +33,12 @@ function getKeys(reqType) {
       keys = ["nome", "descricao", "endereco"];
       break;
 
+    //adequar
     case "categoria":
       keys = ["nome", "descricao", "categoria_pai_id", "estabelecimento_id"];
       break;
     
+    //adequar
     case "produto":
       keys = ["nome", "descricao", "valor", "categoria_id"];
       break;
@@ -83,6 +85,7 @@ export const pickerArrRender = arr => arr.map(v => <Picker.Item label={v.nome} v
 
 //obter produtos associados a uma determinada categoria
 //verificar pq está dando falha ao tentar cadastrar produtos usando a API
+/*
 const getCatProdutos = (categoria_id, prodArr) => {
   let len = prodArr.length;
   let prodFilhoArr = [];
@@ -101,8 +104,9 @@ const getCatProdutos = (categoria_id, prodArr) => {
   }
   return prodFilhoArr;
 }
-
+*/
 //renderizar categorias e produtos
+/*
 //mudar retorno das categorias e produtos pra isso ser mais eficiente (evitar busca sequencial)
 export const categoriasRender = (catArr, prodArr) => {
   console.log("entrou no categoriasRender");
@@ -111,7 +115,7 @@ export const categoriasRender = (catArr, prodArr) => {
   for (let i = 0; i < len; i++) {
     let catPai = catArr[i];
     let filhosArr = [];
-    filhosArr = [...getCatProdutos(catPai.id, prodArr)];
+    //filhosArr = [...getCatProdutos(catPai.id, prodArr)];
     if (catPai.categoria_pai_id == null) {
       //let catFilhosArr = [];
       for (let j = 0; j < len; j++) {
@@ -143,6 +147,80 @@ export const categoriasRender = (catArr, prodArr) => {
   return catPaisArr;
 }
 
+*/
+const produtosRender = (idsArr, prodObj) => idsArr.map(
+  id => {
+    let p = prodObj[id];
+    return <Produto key={id} title={p.nome} desc={p.descricao} val={p.valor} />;
+  }
+);
+
+/*
+1 arranjo de filhos para cada categoriaPai
+*/
+
+export const categoriasRender = (catObj, prodObj) => {
+  let id = Object.keys(catObj)[0];
+  return recCategoriasRender({ cat: catObj[id], id }, catObj, prodObj);
+}
+
+const recCategoriasRender = (catAndId, catObj, prodObj) => {
+  const { cat, id } = catAndId;
+  console.log("categoriasRender - produtos_filhos =", cat.produtos_filhos);
+  let pChildren = produtosRender(cat.produtos_filhos, prodObj);
+  if (cat.categorias_filhas.length != 0) {
+    let cChildren = cat.categorias_filhas.map(
+      id => {
+        let catF = recCategoriasRender({ cat: catObj[id], id }, catObj, prodObj);
+        delete catObj[id];
+        return catF;
+      }
+    );
+    return <Categoria 
+      key={id}
+      title={cat.nome}
+      desc={cat.descricao}
+      children={[ ...pChildren, ...cChildren ]}
+    />
+  } else {
+    return <Categoria 
+      key={id}
+      title={cat.nome}
+      desc={cat.descricao}
+      children={pChildren}
+    />
+  }
+}
+/*
+export const categoriasRender = (catObj, prodObj) => {
+  console.log("catObj em categoriasRender");
+  console.log(catObj);
+  console.log("prodObj em categoriasRender");
+  console.log(prodObj);
+  let list = [];
+  for (id in catObj) {
+    let cat = catObj[id];
+    let pChildren = produtosRender(cat.produtos_filhos, prodObj);
+    let cChildren = cat.categorias_filhas.map(
+      id => {
+        let c = catObj[id];
+        return <Categoria key={id} title={c.title} desc={c.descricao} />;
+      }
+    );
+    list.push(
+      <Categoria 
+        key={id}
+        title={cat.nome}
+        desc={cat.descricao}
+        children={[ ...pChildren, ...cChildren ]}
+      />
+    );
+  }
+  console.log("Arranjo com componentes Cat/Prod");
+  console.log(list);
+  return list;
+}
+*/
 const binarySearchId = (id, list) => {
   let first = 0;
   let last = list.length - 1;
