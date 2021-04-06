@@ -8,6 +8,7 @@ import {
 	List, ActivityIndicator 
 } from 'react-native-paper';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MatIcon from 'react-native-vector-icons/MaterialIcons';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { Centered, FullScreen, GeneralView, TouchableFullScreen, CenteredRow } from '../views/Views';
 import { View, TouchableOpacity, TextInput as NativeTextInput } from 'react-native';
@@ -201,7 +202,7 @@ export const ProdutoAcc = ({ title, desc, val }) => (
 );
 */
 //tentativa implementação accordion
-export const Categoria = ({ title, desc, children, exp, onPressEdit, onPressAdd }) => {
+export const Categoria = ({ title, desc, children, exp, onPressEdit, onPressAdd, onPressDelete }) => {
 	const [expanded, setExpanded] = React.useState(exp);
 
 	return (
@@ -212,7 +213,7 @@ export const Categoria = ({ title, desc, children, exp, onPressEdit, onPressAdd 
 				style={{ backgroundColor: SURFACE_COLOR, borderColor: ICON_GREY, borderWidth: 1 }}
 			>
 				<CenteredRow style={{ padding: 10 }}>
-					<View style={{ flex: 7 }}>
+					<View style={{ flex: 9 }}>
 						<Paragraph style={{ fontSize: 17, color: expanded ? PRIMARY_COLOR : "#000000" }}>{title}</Paragraph>
 						<Paragraph numberOfLines={2} style={{ fontSize: 14, color: ICON_GREY }}>{desc}</Paragraph>
 					</View>
@@ -230,6 +231,14 @@ export const Categoria = ({ title, desc, children, exp, onPressEdit, onPressAdd 
 					>
 						<MIcon name="pencil" size={24} color={ICON_GREY} />
 					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => onPressDelete()}
+						activeOpacity={0.5}
+						style={{ flex: 2, alignItems: 'center' }}
+					>
+						<MatIcon name="close" size={24} color={ICON_GREY} />
+						{/*<FAIcon name="close" size={24} color={ICON_GREY} />*/}
+					</TouchableOpacity>
 					{expanded ? 
 					<MIcon name="chevron-down" size={24} color={ICON_GREY} style={{ flex: 1 }}/> : 
 					<MIcon name="chevron-up" size={24} color={ICON_GREY} style={{ flex: 1 }} />}
@@ -243,9 +252,9 @@ export const Categoria = ({ title, desc, children, exp, onPressEdit, onPressAdd 
 	);
 }
 
-export const Produto = ({ title, desc, val, onPressEdit }) => (
+export const Produto = ({ title, desc, val, onPressEdit, onPressDelete }) => (
 	<CenteredRow style={{ padding: 10 }}>
-		<View style={{ flex: 2 }}>
+		<View style={{ flex: 3 }}>
 			<Paragraph style={{ fontSize: 16 }}>{title}</Paragraph>
 			<Paragraph numberOfLines={2} style={{ fontSize: 13, color: ICON_GREY }}>{desc}</Paragraph>
 		</View>
@@ -258,6 +267,14 @@ export const Produto = ({ title, desc, val, onPressEdit }) => (
 			style={{ flex: 1, alignItems: 'center' }}
 		>
 			<MIcon name="pencil" size={24} color={ICON_GREY} />
+		</TouchableOpacity>
+		<TouchableOpacity
+			onPress={() => onPressDelete()}
+			activeOpacity={0.5}
+			style={{ flex: 1, alignItems: 'center' }}
+		>
+			<MatIcon name="close" size={24} color={ICON_GREY} />
+			{/*<FAIcon name="close" size={24} color={ICON_GREY} />*/}
 		</TouchableOpacity>
 	</CenteredRow>
 );

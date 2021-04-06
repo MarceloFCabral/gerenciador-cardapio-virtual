@@ -18,21 +18,25 @@ import { TouchableStdScreen, TextInput, Button, MultilineTextInput } from '../..
 import { EstabelecimentoContext } from '../../context/EstabelecimentoContext';
 import { TokenContext } from '../../context/TokenContext';
 import { createCategoria, updateCategoria } from '../../../network';
-import { Picker } from '@react-native-picker/picker';
-import { pickerArrRender } from '../../../utils';
+//import { Picker } from '@react-native-picker/picker';
+//import { pickerArrRender } from '../../../utils';
 
 const TelaEditarCategoria = ({ route, navigation }) => {
   const edit = route.params.status == 'e';
+  const { setReload, catPaiId, id } = route.params;
+  console.log("catPaiId (vindo da rota) =", catPaiId);
   let categoria = edit ? route.params.categoria : null; //categoria tem de ter a prop key/chave/id
 
-  //const catContextData = useContext(CategoriasContext);
-  //const { estabelecimento_id, catArray } = catContextData;
   const { estabelecimento_id } = useContext(EstabelecimentoContext);
   const tokenContextData = useContext(TokenContext);
 
   const [nome, setNovoNome] = React.useState(edit ? categoria.nome : "");
   const [descricao, setNovaDesc] = React.useState(edit ? categoria.descricao : "");
-  const [categoria_pai_id, setCatPaiId] = React.useState(edit ? categoria.categoria_pai_id : -1); //usado no edit
+
+  const [categoria_pai_id, setCatPaiId] = React.useState(
+    edit ? (categoria.categoria_pai_id != null ? categoria.categoria_pai_id : undefined) : catPaiId
+  ); //usado no edit
+  console.log("categoria_pai_id (estado local EditarCategoria) =", categoria_pai_id);
 
   const titleStr = (edit ? "Editar " : "Criar ") + "Categoria";
 
@@ -51,16 +55,23 @@ const TelaEditarCategoria = ({ route, navigation }) => {
         size={100}
         onChangeText={setNovaDesc}
       />
-      <Picker
+      {/*<Picker
         selectedValue={categoria_pai_id}
         onValueChange={value => setCatPaiId(value)}
       >
         {pickerArrRender(catArray)}
         <Picker.Item label="Selecione uma categoria" value={-1} />
-      </Picker>
+      </Picker>*/}
       <Button mode="contained" onPress={
-        () => edit ? updateCategoria({nome, descricao, categoria_pai_id, estabelecimento_id}, categoria, /*catContextData,*/ tokenContextData, navigation) :
-                     createCategoria({nome, descricao, categoria_pai_id, estabelecimento_id}, /*catContextData,*/ tokenContextData, navigation)
+        () => edit ? 
+          updateCategoria(
+            {nome, descricao, id, categoria_pai_id, estabelecimento_id},
+            tokenContextData, navigation, setReload
+          ) :
+          createCategoria(
+            {nome, descricao, categoria_pai_id, estabelecimento_id}, 
+            tokenContextData, navigation, setReload
+          )
       }>
         {edit ? "SALVAR" : "CRIAR"}
       </Button>

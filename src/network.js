@@ -10,7 +10,8 @@ export const ROTAS = {
   estabelecimentoId: "/estabelecimento/",
   categoria: "/categoria",
   categoriaId: "/categoria/",
-  produto: "/produto"
+  produto: "/produto",
+  produtoId: "/produto/"
 }
 
 /*
@@ -40,12 +41,25 @@ export function get(route, params, token) {
   });
 }
 
-export async function put(route, params, token) {
+export function put(route, params, token) {
   const url = URL_API + route + params;
   let headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
   if (typeof token != "undefined") headers['Authorization'] = 'Bearer ' + token;
   return fetch(url, {
     method: 'PUT',
+    headers
+  });
+}
+
+export function del(route, params, token) {
+  const url = URL_API + route + params;
+  let headers = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer ' + token
+  };
+  return fetch(url, {
+    method: 'DELETE',
     headers
   });
 }
@@ -160,15 +174,14 @@ export async function updateEstabelecimento(newEstabData, estabContextData, toke
 
 //create
 //EDITAR ESSE MÉTODO PARA TRABALHAR SEM CONTEXTO PRÓPRIO DAS CATEGORIAS
-export async function createCategoria(newCatData, /*catContextData,*/ tokenContextData, navigation) { //idx do arranjo e estabelecimento_id passados em newCatData
-  const { pushCatData, setReload } = catContextData;
+export async function createCategoria(newCatData, tokenContextData, navigation, setReload) {
+  //const { pushCatData, setReload } = catContextData;
   const { token, setToken } = tokenContextData;
 
   let r = await post(ROTAS.categoria, newCatData, token);
   if (r.ok) {
     r = await r.json();
     setToken(r.token);
-    pushCatData(newCatData);
     setReload(true);
     Alert.alert("Categoria criada com sucesso!");
     navigation.goBack();
@@ -199,14 +212,14 @@ export async function getCategorias(estabId, token, setToken) {
 
 //update
 //EDITAR ESSE MÉTODO PARA TRABALHAR SEM CONTEXTO PRÓPRIO DAS CATEGORIAS
-export async function updateCategoria(newCatData, categoria, /*catContextData,*/ tokenContextData, navigation) {
-  const { setReload } = catContextData;
+//atualmente editando este método para permitir edição de categorias
+export async function updateCategoria(newCatData, tokenContextData, navigation, setReload) {
+  //const { setReload } = catContextData;
   const { token, setToken } = tokenContextData;
-  let r = await put(ROTAS.categoriaId + categoria.id, getParams("categoria", newCatData), token);
+  let r = await put(ROTAS.categoriaId + newCatData.id, getParams("categoria", newCatData), token);
   if (r.ok) {
     r = await r.json();
     setToken(r.token);
-    categoria = { ...newCatData };
     setReload(true);
     Alert.alert("Categoria atualizada com sucesso!");
     navigation.goBack();
@@ -215,6 +228,23 @@ export async function updateCategoria(newCatData, categoria, /*catContextData,*/
     console.log(r);
     Alert.alert("Ocorreu um erro. Tente novamente.");
   }
+}
+
+//delete
+export async function deleteCategoria(catId, tokenContextData, setReload) {
+  const { token, setToken } = tokenContextData;
+  let r = await del(ROTAS.categoriaId + catId, "", token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    setReload(true);
+    Alert.alert("Categoria excluída com sucesso!");
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
+  }
+  return r;
 }
 
 /*
@@ -259,4 +289,21 @@ export async function getProdutos(estabId, token, setToken) {
     r = await r.json();
     console.log(r);
   }
+}
+
+//delete
+export async function deleteProduto(prodId, tokenContextData, setReload) {
+  const { token, setToken } = tokenContextData;
+  let r = await del(ROTAS.produtoId + prodId, "", token);
+  if (r.ok) {
+    r = await r.json();
+    setToken(r.token);
+    setReload(true);
+    Alert.alert("Produto excluído com sucesso!");
+  } else {
+    r = await r.json();
+    console.log(r);
+    Alert.alert("Ocorreu um erro. Tente novamente.");
+  }
+  return r;
 }

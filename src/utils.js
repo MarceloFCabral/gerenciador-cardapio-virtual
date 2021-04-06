@@ -16,7 +16,7 @@
 import React from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { Categoria, Produto } from './components/ui/Ui';
-
+import { deleteCategoria, deleteProduto } from './network';
 
 function getKeys(reqType) {
   let keys = null;
@@ -85,140 +85,83 @@ export const pickerArrRender = arr => arr.map(v => <Picker.Item label={v.nome} v
 
 //obter produtos associados a uma determinada categoria
 //verificar pq está dando falha ao tentar cadastrar produtos usando a API
-/*
-const getCatProdutos = (categoria_id, prodArr) => {
-  let len = prodArr.length;
-  let prodFilhoArr = [];
-  for (let i = 0; i < len; i++) {
-    if (prodArr[i].categoria_id == categoria_id) {
-      let prod = prodArr[i];
-      prodFilhoArr.push(
-        <Produto 
-          title={prod.nome}
-          desc={prod.descricao}
-          val={prod.valor}
-          //função indefinida
-        />
-      );
-    }
-  }
-  return prodFilhoArr;
-}
-*/
-//renderizar categorias e produtos
-/*
-//mudar retorno das categorias e produtos pra isso ser mais eficiente (evitar busca sequencial)
-export const categoriasRender = (catArr, prodArr) => {
-  console.log("entrou no categoriasRender");
-  let len = catArr.length;
-  let catPaisArr = [];
-  for (let i = 0; i < len; i++) {
-    let catPai = catArr[i];
-    let filhosArr = [];
-    //filhosArr = [...getCatProdutos(catPai.id, prodArr)];
-    if (catPai.categoria_pai_id == null) {
-      //let catFilhosArr = [];
-      for (let j = 0; j < len; j++) {
-        let cat = catArr[j];
-        if (cat.categoria_pai_id == catPai.id) {
-          filhosArr.push(
-            <Categoria
-              key={cat.id}
-              title={cat.nome}
-              desc={cat.descricao}
-              exp={false} 
-              //funções indefinidas
-            />
-          );
-        }
-      }
-      catPaisArr.push(
-        <Categoria 
-          key={catPai.id}
-          title={catPai.nome}
-          desc={catPai.descricao}
-          exp={false}
-          children={filhosArr}
-        />
-      );
-    }
-  }
-
-  return catPaisArr;
-}
-
-*/
-const produtosRender = (idsArr, prodObj) => idsArr.map(
+const produtosRender = (idsArr, prodObj, handleEditProd, handleDelProd) => idsArr.map(
   id => {
     let p = prodObj[id];
-    return <Produto key={id} title={p.nome} desc={p.descricao} val={p.valor} />;
+    return <Produto 
+      key={id}
+      title={p.nome}
+      desc={p.descricao}
+      val={p.valor}
+      onPressEdit={() => handleEditProd(id)}
+      onPressDelete={() => handleDelProd(id)} 
+    />;
   }
 );
-
+/*
+//deletar produtos
+const produtosDelete = (idsArr, prodObj, tokenContextData) => idsArr.map(id => deleteProduto(id,));
+*/
 /*
 1 arranjo de filhos para cada categoriaPai
 */
 
-export const categoriasRender = (catObj, prodObj) => {
-  let id = Object.keys(catObj)[0];
-  return recCategoriasRender({ cat: catObj[id], id }, catObj, prodObj);
+export const categoriasRender = (catObj, prodObj, handlers) => {
+  let catArr = [];
+  let renderedArr = [];
+  for (id in catObj) {
+    catArr.push(recCategoriasRender({ cat: catObj[id], idCatPai: id }, catObj, prodObj, handlers, renderedArr));
+  }
+  return catArr;
 }
 
-const recCategoriasRender = (catAndId, catObj, prodObj) => {
-  const { cat, id } = catAndId;
-  console.log("categoriasRender - produtos_filhos =", cat.produtos_filhos);
-  let pChildren = produtosRender(cat.produtos_filhos, prodObj);
-  if (cat.categorias_filhas.length != 0) {
-    let cChildren = cat.categorias_filhas.map(
-      id => {
-        let catF = recCategoriasRender({ cat: catObj[id], id }, catObj, prodObj);
-        delete catObj[id];
-        return catF;
-      }
-    );
-    return <Categoria 
-      key={id}
-      title={cat.nome}
-      desc={cat.descricao}
-      children={[ ...pChildren, ...cChildren ]}
-    />
-  } else {
-    return <Categoria 
-      key={id}
-      title={cat.nome}
-      desc={cat.descricao}
-      children={pChildren}
-    />
-  }
-}
-/*
-export const categoriasRender = (catObj, prodObj) => {
-  console.log("catObj em categoriasRender");
-  console.log(catObj);
-  console.log("prodObj em categoriasRender");
-  console.log(prodObj);
-  let list = [];
-  for (id in catObj) {
-    let cat = catObj[id];
-    let pChildren = produtosRender(cat.produtos_filhos, prodObj);
-    let cChildren = cat.categorias_filhas.map(
-      id => {
-        let c = catObj[id];
-        return <Categoria key={id} title={c.title} desc={c.descricao} />;
-      }
-    );
-    list.push(
-      <Categoria 
+const recCategoriasRender = (catAndId, catObj, prodObj, handlers, renderedArr) => {
+  const { cat, idCatPai } = catAndId;
+  //console.log("categoriasRender - produtos_filhos =", cat.produtos_filhos);
+  //let pChildren = produtosRender(cat.produtos_filhos, prodObj, handlers.handleEditProd, handlers.handleDelProd);
+  if (renderedArr[idCatPai] != 'x') {
+    let pChildren = produtosRender(cat.produtos_filhos, prodObj, handlers.handleEditProd, handlers.handleDelProd);
+    if (cat.categorias_filhas.length != 0) {
+      let cChildren = cat.categorias_filhas.map(
+        id => {
+          let catF = recCategoriasRender({ cat: catObj[id], id }, catObj, prodObj, handlers, renderedArr);
+          //delete catObj[id]; //obrigatório refazer requisição para obter categorias atualizadas, pois o delete "deforma" o retorno original
+          return catF;
+        }
+      );
+      console.log("categoria_pai_id =", cat.categoria_pai_id);
+      renderedArr[idCatPai] = 'x';
+      return <Categoria 
         key={id}
         title={cat.nome}
         desc={cat.descricao}
         children={[ ...pChildren, ...cChildren ]}
+        onPressAdd={() => handlers.handleAdd(id)}
+        onPressEdit={() => handlers.handleEditCat(cat, id)}
+        onPressDelete={() => handlers.handleDelCat(id)}
       />
-    );
+    } else {
+      renderedArr[idCatPai] = 'x';
+      return <Categoria 
+        key={id}
+        title={cat.nome}
+        desc={cat.descricao}
+        children={pChildren}
+        onPressAdd={() => handlers.handleAdd(id)}
+        onPressEdit={() => handlers.handleEditCat(cat, id)}
+        onPressDelete={() => handlers.handleDelCat(id)}
+      />
+    }
   }
-  console.log("Arranjo com componentes Cat/Prod");
-  console.log(list);
-  return list;
+}
+/*
+//deletar categoria, suas categorias filhas e seus produtos filhos recursivamente
+export const categoriasDelete = (id, catObj, prodObj) => {
+  //let c = catObj[id];
+  for (id in catObj) {
+    let c = catObj[id];
+
+  }
 }
 */
 const binarySearchId = (id, list) => {
